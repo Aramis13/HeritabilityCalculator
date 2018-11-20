@@ -10,17 +10,17 @@ namespace HeritabilityCalculator
     /// <summary>
     /// Parse a newick format string to c# class
     /// </summary>
-    public class Parser
+    public class Tree
     {
         private int currentPosition;
         private string input;
 
-        public Parser(string text)
+        public Tree(string text)
         {
             input = new string(text.Where(c => !char.IsWhiteSpace(c)).ToArray());
             currentPosition = 0;
         }
-        public Branch ParseTree()
+        public Branch Parse()
         {
             return new Branch { SubBranches = ParseBranchSet() };
         }

@@ -9,5 +9,6 @@ namespace HeritabilityCalculator
     public class Leaf : Branch
     {
         public string Name { get; set; }
+        public object TraitValue { get; set; }
     }
 }
