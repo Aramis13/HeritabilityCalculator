@@ -1,6 +1,6 @@
 ﻿namespace HeritabilityCalculator
 {
-    partial class Form1
+    partial class HeritabilityCalculator
     {
         /// <summary>
         /// Required designer variable.
