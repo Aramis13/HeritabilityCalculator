@@ -7,16 +7,9 @@ using System.Threading.Tasks;
 
 namespace HeritabilityCalculator
 {
-    public class Branch
-    {
-        public double Length { get; set; }
-        public List<Branch> SubBranches { get; set; } = new List<Branch>();
-    }
-    public class Leaf : Branch
-    {
-        public string Name { get; set; }
-    }
-
+    /// <summary>
+    /// Parse a newick format string to c# class
+    /// </summary>
     public class Parser
     {
         private int currentPosition;
