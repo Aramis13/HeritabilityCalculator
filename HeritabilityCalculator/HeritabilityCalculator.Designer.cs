@@ -28,34 +28,152 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
+            this.TreeBrowse = new System.Windows.Forms.Button();
+            this.TreePathText = new System.Windows.Forms.TextBox();
+            this.BrowseTreeLabel = new System.Windows.Forms.Label();
+            this.BrowseInputlabel = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.InputBrowse = new System.Windows.Forms.Button();
+            this.MainHeader = new System.Windows.Forms.Label();
+            this.Log = new System.Windows.Forms.RichTextBox();
+            this.DescriptionLabel = new System.Windows.Forms.Label();
+            this.StartButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // button1
+            // TreeBrowse
             // 
-            this.button1.Location = new System.Drawing.Point(421, 238);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.TreeBrowse.Location = new System.Drawing.Point(647, 228);
+            this.TreeBrowse.Name = "TreeBrowse";
+            this.TreeBrowse.Size = new System.Drawing.Size(92, 32);
+            this.TreeBrowse.TabIndex = 0;
+            this.TreeBrowse.Text = "Browse";
+            this.TreeBrowse.UseVisualStyleBackColor = true;
+            this.TreeBrowse.Click += new System.EventHandler(this.TreeBrowse_Click);
             // 
-            // Form1
+            // TreePathText
+            // 
+            this.TreePathText.Location = new System.Drawing.Point(148, 229);
+            this.TreePathText.Multiline = true;
+            this.TreePathText.Name = "TreePathText";
+            this.TreePathText.ReadOnly = true;
+            this.TreePathText.Size = new System.Drawing.Size(500, 30);
+            this.TreePathText.TabIndex = 1;
+            // 
+            // BrowseTreeLabel
+            // 
+            this.BrowseTreeLabel.AutoSize = true;
+            this.BrowseTreeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BrowseTreeLabel.Location = new System.Drawing.Point(14, 230);
+            this.BrowseTreeLabel.Name = "BrowseTreeLabel";
+            this.BrowseTreeLabel.Size = new System.Drawing.Size(121, 25);
+            this.BrowseTreeLabel.TabIndex = 2;
+            this.BrowseTreeLabel.Text = "Newick Tree";
+            // 
+            // BrowseInputlabel
+            // 
+            this.BrowseInputlabel.AutoSize = true;
+            this.BrowseInputlabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BrowseInputlabel.Location = new System.Drawing.Point(17, 343);
+            this.BrowseInputlabel.Name = "BrowseInputlabel";
+            this.BrowseInputlabel.Size = new System.Drawing.Size(55, 25);
+            this.BrowseInputlabel.TabIndex = 5;
+            this.BrowseInputlabel.Text = "Input";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(149, 342);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(500, 30);
+            this.textBox1.TabIndex = 4;
+            // 
+            // InputBrowse
+            // 
+            this.InputBrowse.Location = new System.Drawing.Point(648, 341);
+            this.InputBrowse.Name = "InputBrowse";
+            this.InputBrowse.Size = new System.Drawing.Size(92, 32);
+            this.InputBrowse.TabIndex = 3;
+            this.InputBrowse.Text = "Browse";
+            this.InputBrowse.UseVisualStyleBackColor = true;
+            this.InputBrowse.Click += new System.EventHandler(this.InputBrowse_Click);
+            // 
+            // MainHeader
+            // 
+            this.MainHeader.AutoSize = true;
+            this.MainHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MainHeader.Location = new System.Drawing.Point(165, 28);
+            this.MainHeader.Name = "MainHeader";
+            this.MainHeader.Size = new System.Drawing.Size(498, 58);
+            this.MainHeader.TabIndex = 6;
+            this.MainHeader.Text = "Heritability Calculator";
+            // 
+            // Log
+            // 
+            this.Log.Location = new System.Drawing.Point(12, 601);
+            this.Log.Name = "Log";
+            this.Log.ReadOnly = true;
+            this.Log.Size = new System.Drawing.Size(758, 140);
+            this.Log.TabIndex = 7;
+            this.Log.Text = "";
+            // 
+            // DescriptionLabel
+            // 
+            this.DescriptionLabel.AutoSize = true;
+            this.DescriptionLabel.Location = new System.Drawing.Point(100, 118);
+            this.DescriptionLabel.Name = "DescriptionLabel";
+            this.DescriptionLabel.Size = new System.Drawing.Size(227, 17);
+            this.DescriptionLabel.TabIndex = 8;
+            this.DescriptionLabel.Text = "Short description about the app.....";
+            // 
+            // StartButton
+            // 
+            this.StartButton.Enabled = false;
+            this.StartButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StartButton.Location = new System.Drawing.Point(316, 493);
+            this.StartButton.Name = "StartButton";
+            this.StartButton.Size = new System.Drawing.Size(160, 73);
+            this.StartButton.TabIndex = 9;
+            this.StartButton.Text = "Start";
+            this.StartButton.UseVisualStyleBackColor = true;
+            this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
+            // 
+            // HeritabilityCalculator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button1);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(782, 753);
+            this.Controls.Add(this.StartButton);
+            this.Controls.Add(this.DescriptionLabel);
+            this.Controls.Add(this.Log);
+            this.Controls.Add(this.MainHeader);
+            this.Controls.Add(this.BrowseInputlabel);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.InputBrowse);
+            this.Controls.Add(this.BrowseTreeLabel);
+            this.Controls.Add(this.TreePathText);
+            this.Controls.Add(this.TreeBrowse);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Name = "HeritabilityCalculator";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Heritability Calculator";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button TreeBrowse;
+        private System.Windows.Forms.TextBox TreePathText;
+        private System.Windows.Forms.Label BrowseTreeLabel;
+        private System.Windows.Forms.Label BrowseInputlabel;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button InputBrowse;
+        private System.Windows.Forms.Label MainHeader;
+        private System.Windows.Forms.RichTextBox Log;
+        private System.Windows.Forms.Label DescriptionLabel;
+        private System.Windows.Forms.Button StartButton;
     }
 }
 

@@ -73,7 +73,7 @@ namespace HeritabilityCalculator
             return true;
         }
 
-        public double getVT()
+        public double GetVT()
         {
             return this.VT_Final_Result;
         }
