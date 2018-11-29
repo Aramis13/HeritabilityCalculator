@@ -77,22 +77,23 @@ namespace HeritabilityCalculator
             Important
         }
 
-        public string GetFileString(string filter)
+        public string GetFileString(string filter, out string filePath)
         {
             fileDialog = new OpenFileDialog();
             fileDialog.Filter = filter;
             string res = null;
+            filePath = null;
             DialogResult result = fileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                string file = fileDialog.FileName;
+                filePath = fileDialog.FileName;
                 try
                 {
-                    res = File.ReadAllText(file);
+                    res = File.ReadAllText(filePath);
                 }
                 catch
                 {
-                    WriteToLog("Failed to read file: " + file, MessageType.Error);
+                    WriteToLog("Failed to read file: " + filePath, MessageType.Error);
                 }
             }
             return res;
@@ -100,7 +101,8 @@ namespace HeritabilityCalculator
 
         private void TreeBrowse_Click(object sender, EventArgs e)
         {
-            string newickTree = GetFileString("Newick Tree (*.txt)|*.txt");
+            string path;
+            string newickTree = GetFileString("Newick Tree (*.txt)|*.txt", out path);
             string msg = string.Empty;
             MessageType type = MessageType.Info;
             if (newickTree != null)
@@ -108,10 +110,17 @@ namespace HeritabilityCalculator
                 try
                 {
                     MainTree = new Tree(newickTree);
+                    if (!MainTree.ValidateTree(out msg))
+                    {
+                        TreeValid = false;
+                        WriteToLog(msg, MessageType.Error);
+                        throw new Exception();
+                    }
                     MainBranch = MainTree.Parse();
                     TreeValid = true;
                     msg = "Tree uploaded successfully";
                     type = MessageType.Success;
+                    TreePathText.Text = path;
                 }
                 catch
                 {
@@ -129,7 +138,8 @@ namespace HeritabilityCalculator
 
         private void InputBrowse_Click(object sender, EventArgs e)
         {
-            string json = GetFileString("Input Data (*.json)|*.json");
+            string path;
+            string json = GetFileString("Input Data (*.json)|*.json", out path);
             string msg = string.Empty;
             MessageType type = MessageType.Info;
             if (json != null)
@@ -137,9 +147,17 @@ namespace HeritabilityCalculator
                 try
                 {
                     UserInputData = JsonConvert.DeserializeObject<UserInput>(json);
+                    if (UserInputData.DistanceMatrix == null || UserInputData.EmissionMatrix == null
+                        || UserInputData.TraitValues == null)
+                    {
+                        UserInputValid = false;
+                        throw new Exception();
+                    }
+                       
                     UserInputValid = true;
                     msg = "User input uploaded successfully";
                     type = MessageType.Success;
+                    UserInputText.Text = path;
                 }
                 catch
                 {
@@ -162,7 +180,7 @@ namespace HeritabilityCalculator
 
         public void UpdateStartButton()
         {
-            if (UserInputData.DistanceMatrix == null || UserInputData.EmissionMatrix == null
+            if (UserInputData == null || UserInputData.DistanceMatrix == null || UserInputData.EmissionMatrix == null
                 || UserInputData.TraitValues == null)
                 UserInputValid = false;
             StartButton.Enabled = TreeValid && UserInputValid;
@@ -179,6 +197,8 @@ namespace HeritabilityCalculator
             }
 
             Log.AppendText(msg + Environment.NewLine);
+            Log.SelectionStart = Log.Text.Length;
+            Log.ScrollToCaret();
         }
 
 

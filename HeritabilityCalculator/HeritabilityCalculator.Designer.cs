@@ -32,7 +32,7 @@
             this.TreePathText = new System.Windows.Forms.TextBox();
             this.BrowseTreeLabel = new System.Windows.Forms.Label();
             this.BrowseInputlabel = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.UserInputText = new System.Windows.Forms.TextBox();
             this.InputBrowse = new System.Windows.Forms.Button();
             this.MainHeader = new System.Windows.Forms.Label();
             this.Log = new System.Windows.Forms.RichTextBox();
@@ -79,14 +79,14 @@
             this.BrowseInputlabel.TabIndex = 5;
             this.BrowseInputlabel.Text = "Input";
             // 
-            // textBox1
+            // UserInputText
             // 
-            this.textBox1.Location = new System.Drawing.Point(149, 342);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(500, 30);
-            this.textBox1.TabIndex = 4;
+            this.UserInputText.Location = new System.Drawing.Point(149, 342);
+            this.UserInputText.Multiline = true;
+            this.UserInputText.Name = "UserInputText";
+            this.UserInputText.ReadOnly = true;
+            this.UserInputText.Size = new System.Drawing.Size(500, 30);
+            this.UserInputText.TabIndex = 4;
             // 
             // InputBrowse
             // 
@@ -148,7 +148,7 @@
             this.Controls.Add(this.Log);
             this.Controls.Add(this.MainHeader);
             this.Controls.Add(this.BrowseInputlabel);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.UserInputText);
             this.Controls.Add(this.InputBrowse);
             this.Controls.Add(this.BrowseTreeLabel);
             this.Controls.Add(this.TreePathText);
@@ -168,7 +168,7 @@
         private System.Windows.Forms.TextBox TreePathText;
         private System.Windows.Forms.Label BrowseTreeLabel;
         private System.Windows.Forms.Label BrowseInputlabel;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox UserInputText;
         private System.Windows.Forms.Button InputBrowse;
         private System.Windows.Forms.Label MainHeader;
         private System.Windows.Forms.RichTextBox Log;

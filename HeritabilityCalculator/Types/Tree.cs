@@ -20,6 +20,24 @@ namespace HeritabilityCalculator
             input = new string(text.Where(c => !char.IsWhiteSpace(c)).ToArray());
             currentPosition = 0;
         }
+
+        public bool ValidateTree(out string error)
+        {
+            bool success = true;
+            error = "None";
+            if (string.IsNullOrEmpty(input))
+            {
+                success = false;
+                error = "There is no input in the system";
+            }
+            else
+            {
+               // TODO: Validate input.
+            }
+
+            return success;
+        }
+
         public Branch Parse()
         {
             return new Branch { SubBranches = ParseBranchSet() };
