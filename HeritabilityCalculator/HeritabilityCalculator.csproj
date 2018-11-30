@@ -63,7 +63,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Accessories\ModelVariance.cs" />
     <Compile Include="Accessories\TotalVariance.cs" />
+    <Compile Include="Accessories\Variance.cs" />
     <Compile Include="HeritabilityCalculator.cs">
       <SubType>Form</SubType>
     </Compile>

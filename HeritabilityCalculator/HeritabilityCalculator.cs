@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Accord.Statistics.Models.Markov.Learning;
@@ -59,7 +60,9 @@ namespace HeritabilityCalculator
         public bool TreeValid = false;
         public bool UserInputValid = false;
         public UserInput UserInputData;
-
+        public TotalVariance VT;
+        public ModelVariance VM;
+        
         #endregion Fields
 
 
@@ -147,19 +150,18 @@ namespace HeritabilityCalculator
                 try
                 {
                     UserInputData = JsonConvert.DeserializeObject<UserInput>(json);
-                    if (UserInputData.DistanceMatrix == null || UserInputData.EmissionMatrix == null
-                        || UserInputData.TraitValues == null)
+                    if (!UserInputData.Validate())
                     {
                         UserInputValid = false;
                         throw new Exception();
                     }
-                       
+
                     UserInputValid = true;
                     msg = "User input uploaded successfully";
                     type = MessageType.Success;
                     UserInputText.Text = path;
                 }
-                catch
+                catch (Exception ex)
                 {
                     msg = "Failed to parse input" + Environment.NewLine;
                     msg += "Validate that your input is in the correct format.";
@@ -171,36 +173,66 @@ namespace HeritabilityCalculator
                 UserInputValid = false;
             UpdateStartButton();
             WriteToLog(msg, type);
+            
         }
 
         private void StartButton_Click(object sender, EventArgs e)
         {
 
+            VT = new TotalVariance(UserInputData);
+            bool success = ThreadPool.QueueUserWorkItem(VT.Calculate, this);
+            if (!success)
+                WriteToLog("Faild to start VT calculation, please try again.", MessageType.Error);
+
+            VM = new ModelVariance(UserInputData);
+            success = ThreadPool.QueueUserWorkItem(VM.Calculate, this);
+            if (!success)
+                WriteToLog("Faild to start VM calculation, please try again.", MessageType.Error);
         }
 
         public void UpdateStartButton()
         {
-            if (UserInputData == null || UserInputData.DistanceMatrix == null || UserInputData.EmissionMatrix == null
-                || UserInputData.TraitValues == null)
+
+            if (UserInputData == null || !UserInputData.Validate())
                 UserInputValid = false;
             StartButton.Enabled = TreeValid && UserInputValid;
         }
 
-        public void WriteToLog(string msg, MessageType type)
+        public void WriteToLog(string message, MessageType type)
         {
-            switch (type)
+            string msg = DateTime.Now.ToLongTimeString() + ": " + message;
+            if (Log.InvokeRequired)
             {
-                case MessageType.Info: Log.SelectionColor = Color.Gray; break;
-                case MessageType.Error: Log.SelectionColor = Color.Red; break;
-                case MessageType.Success: Log.SelectionColor = Color.Green; break;
-                case MessageType.Important: Log.SelectionColor = Color.Blue; break;
+                Log.BeginInvoke((Action)(() =>
+                {
+                    switch (type)
+                    {
+                        case MessageType.Info: Log.SelectionColor = Color.Gray; break;
+                        case MessageType.Error: Log.SelectionColor = Color.Red; break;
+                        case MessageType.Success: Log.SelectionColor = Color.Green; break;
+                        case MessageType.Important: Log.SelectionColor = Color.Blue; break;
+                    }
+
+                    Log.AppendText(msg + Environment.NewLine);
+                    Log.SelectionStart = Log.Text.Length;
+                    Log.ScrollToCaret();
+                }));
             }
+            else
+            {
+                switch (type)
+                {
+                    case MessageType.Info: Log.SelectionColor = Color.Gray; break;
+                    case MessageType.Error: Log.SelectionColor = Color.Red; break;
+                    case MessageType.Success: Log.SelectionColor = Color.Green; break;
+                    case MessageType.Important: Log.SelectionColor = Color.Blue; break;
+                }
 
-            Log.AppendText(msg + Environment.NewLine);
-            Log.SelectionStart = Log.Text.Length;
-            Log.ScrollToCaret();
+                Log.AppendText(msg + Environment.NewLine);
+                Log.SelectionStart = Log.Text.Length;
+                Log.ScrollToCaret();
+            }
         }
-
 
     }
 }

@@ -6,76 +6,44 @@ using System.Threading.Tasks;
 
 namespace HeritabilityCalculator
 {
-    class TotalVariance
+    public class TotalVariance : Variance
     {
+       
         #region Fields
-        public double n, VT_Final_Result;
-        public Dictionary<string, int> NumOfInstances = new Dictionary<string, int>();
-        public Dictionary<string, double> Pc = new Dictionary<string, double>();
-        double[,] DistanceMatrix;
-        public string[] order;
+        public double VT_Final_Result { get; private set; }
+
         #endregion Fields
 
-        /*  CONSTRUCTOR */
-        public TotalVariance(Dictionary<string, object> traitValues, double[,] DistanceMatrix, string[] order)
+        public TotalVariance(UserInput userinput) : base(userinput)
         {
-            this.n = traitValues.Count;
-            this.DistanceMatrix = DistanceMatrix;
-            this.order = order;
-
-            CalcInstances(traitValues);
-            CalculatePC();
-            CalcTotalVariance();
+           
         }
 
-        /* Calculate Total Variance */
-        public bool CalcTotalVariance()
+        public override void Calculate(object Main)
         {
+            if (!(Main is HeritabilityCalculator))
+                return;
+            HeritabilityCalculator form = Main as HeritabilityCalculator;
+            if (!userData.Validate())
+                return;
+            Dictionary<string,int> numOfInstances = GetNumOfInstances(userData.ObservedTraits);
+            if (numOfInstances == null)
+                return;
+            Dictionary<string,double> Pc = GetPC(numOfInstances);
+            if (Pc == null)
+                return;
             List<double> Vis = new List<double>();
-            double temp_vi = 0;
-            string current_phenotype;
-
-            for (int i = 0; i < DistanceMatrix.GetLength(0); i++)
+            for (int i = 0; i < userData.Traits.Length; i++)
             {
-                current_phenotype = order[i];
-                for (int j = 0; j < DistanceMatrix.GetLength(1); j++)
-                    temp_vi += DistanceMatrix[i, j] * DistanceMatrix[i, j];
-                temp_vi *= Pc[current_phenotype];
-                Vis.Add(temp_vi);
-                temp_vi = 0;
+                double V = 0;
+                for (int j = 0; j < userData.Traits.Length; j++)
+                {
+                    V += GetVariance(userData.DistanceMatrix[i, j], Pc.ElementAt(i).Value);
+                }
+                Vis.Add(V);
             }
-            this.VT_Final_Result = Vis.Min();
-            return true;
-        }
-
-        /* Calcualte how many instances of each phenotype are exist    */
-        public bool CalcInstances(Dictionary<string, object> traitValues)
-        {
-            foreach (string value in traitValues.Values)
-            {
-                if (NumOfInstances.ContainsKey(value))
-                    NumOfInstances[value]++;
-                else
-                    NumOfInstances.Add(value, 1);
-            }
-            
-            return true;
-        } 
-
-        /* Calculate distribution of each phenotypic value  */
-        public bool CalculatePC()
-        {
-            foreach (string key in NumOfInstances.Keys)
-            {
-                double val = NumOfInstances[key] / n;
-                Pc.Add(key, val);
-            }
-            return true;
-        }
-
-        public double GetVT()
-        {
-            return this.VT_Final_Result;
+            VT_Final_Result = Vis.Min();
+            RaiseFinished(form, new FinishedEventArgs("Total Variance: " + VT_Final_Result));
         }
 
     }

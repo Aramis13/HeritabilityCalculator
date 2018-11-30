@@ -10,13 +10,29 @@ namespace HeritabilityCalculator
     {
         public double[,] DistanceMatrix;
         public double[,] EmissionMatrix;
-        public TraitValue[] TraitValues;
-        //public Dictionary<string, object> TraitValues;
+        public TraitValue[] ObservedTraits;
+        public string[] Traits;
+        public int N
+        {
+            get
+            {
+                if (ObservedTraits != null)
+                    return ObservedTraits.Length;
+                else
+                    return 0;
+            }
+        }
+
+        public bool Validate()
+        {
+            return DistanceMatrix != null && EmissionMatrix != null && ObservedTraits != null
+                && Traits != null;
+        }
     }
 
     public class TraitValue
     {
         public string Name;
-        public object value;
+        public string value;
     }
 }
