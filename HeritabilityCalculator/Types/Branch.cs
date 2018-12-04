@@ -9,6 +9,7 @@ namespace HeritabilityCalculator
     {
         public double Length { get; set; }
         public List<Branch> SubBranches { get; set; } = new List<Branch>();
+        public TraitValue trait_value { get; set; } = new TraitValue();
 
         //public void CalculateVM(object Main)
         //{
