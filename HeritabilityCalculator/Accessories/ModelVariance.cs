@@ -22,75 +22,129 @@ namespace HeritabilityCalculator
             HeritabilityCalculator form = Main as HeritabilityCalculator;
             if (!userData.Validate())
                 return;
+            
+            double[,] Q = CalculateExp(userData.EmissionMatrix);
 
-            /* VM ALGORITHM */
+     
+        }
 
-            // 1. Create tree root node with a RANDOM phenotypic value.
+        /// <summary>
+        /// Calculate exp(x) using Taylor Expansion
+        /// </summary>
+        /// <param name="x">Exponent for Euler's Number</param>
+        /// <returns>Returns exp(x)</returns>
+        private double[,] CalculateExp(double[,] x)
+        {
+            // Holds and returns final answer
+            double[,] answer = new double[x.GetLength(0), x.GetLength(1)];
 
-            Branch root = new Branch();
+            // Holds previous answer and is used to stop Taylor Expansion
+            double[,] oldanswer = new double[x.GetLength(0), x.GetLength(1)];
 
-            root.trait_value = getRandomRootValue(userData.Traits);
+            // Summation index variable
+            double k = 0;
 
-            if (!(root.trait_value == null))
-                update_log("success", root, form);
+            // Refine the solution by adding more terms to the Taylor Expansion.
+            // Stop when the answer doesn't change.
+            while (true)
+            {
+                double[,] temp = new double[x.GetLength(0), x.GetLength(1)];
+                temp = GetMatrixPower(x, k);
+                double facturial = Factorial(k);
+                temp = Elementwise.Divide(temp, facturial);
+                answer = Elementwise.Add(answer, temp);
+                int z = 0;
+                for (int i = 0; i < answer.GetLength(0); i++)
+                {
+                    for (int j = 0; j < answer.GetLength(0); j++)
+                    {
+                        if (answer[i, j] == oldanswer[i, j])
+                            z++;
+                    }
+                }
+                if (z == x.Length)
+                {
+                    break;
+                }
+                else
+                {
+                    oldanswer = answer;
+                    k++;
+                }
+            }
+            return answer;
+        }
+
+        private double[,] GetMatrixPower(double[,] x, double power)
+        {
+      
+            double[,] temp = (double[,])x.Clone();
+            
+            if (power == 0)
+            {
+                for (int i = 0; i < x.GetLength(0); i++)
+                {
+                    for (int j = 0; j < x.GetLength(1); j++)
+                    {
+                        if (i == j)
+                            temp[i, j] = 1;
+                        else
+                            temp[i, j] = 0;
+                    }
+                }
+            }
             else
-                update_log("failure", root, form);
-
-            // 2. Calculate the transition probabilitis matrix: exp_mat = e ^ Q * t
-
-            // CALCULATION ERROR
-            int t = 7;
-            double[,] exp_mat = calc_exponential(userData.EmissionMatrix,t);
-            print_matrix(exp_mat);
-
-            // 3. Using the transition probabilitis matrix (exp_mat), generate phenotypic values for sub branches
-
-            // ......
-            // ......
-
-
+            {
+                int l = 0;
+                while (l < power - 1)
+                {
+                    double[,] res = new double[x.GetLength(0), x.GetLength(1)];
+                    int size = 0;
+                    while (size < x.Length)
+                    {
+                        for (int i = 0; i < x.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < x.GetLength(1); j++)
+                            {
+                                double[] row = temp.GetRow(i);
+                                double[] col = x.GetColumn(j);
+                                double val = 0;
+                                for (int k = 0; k < row.Length; k++)
+                                    val += row[k] * col[k];
+                                res[i, j] = val;
+                                size++;
+                            }
+                        }
+                        temp = res;
+                    }
+                    l++;
+                }
+            }
+            return temp;
         }
 
-        private double[,] calc_exponential (double[,] Q, int t)
+        /// <summary>
+        /// Calculate the factorial for x
+        /// </summary>
+        /// <param name="x"></param>
+        /// <returns></returns>
+        private double Factorial(double x)
         {
-            int row_count = Q.GetLength(0), col_count = Q.GetLength(1);
-            double[,] result = new double[row_count,col_count];
+            double answer = 1;
+            double counter = 1;
 
-            for (int i = 0; i < row_count; i++)         // Q*t
-                for (int j = 0; j < col_count; j++)
-                    result[i,j] = Q[i, j]*t;
-            Console.Out.WriteLine("*t: ");
-            print_matrix(result);
+            while (counter <= x)
+            {
+                answer = answer * counter;
+                counter++;
 
-            //return Matrix.Exp(result);
-            return Matrix.Exp(result);
-
+            }
+            return answer;
         }
 
-        // TO TEST
-        private double[,] matrix_addition (double [,] A, double [,] B)
-        {
-            int m, n, i, j;
+    
 
-            m = A.GetLength(0);
-            n = B.GetLength(1);
-
-            if (!(m == B.GetLength(0)))
-                return null;
-            if (!(n == A.GetLength(1)))
-                return null;
-
-            double[,] C = new double[m, n];
-
-            for (i = 0; i < m; i++)
-                for (j = 0; j < n; j++)
-                    C[i, j] = A[i, j] + B[i, j];
-
-            return C;
-
-        }
-
-        private void print_matrix (double[,] mat)
+    private void print_matrix (double[,] mat)
         {
             int row_count = mat.GetLength(0), col_count = mat.GetLength(1);
 
