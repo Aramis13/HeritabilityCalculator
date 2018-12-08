@@ -32,17 +32,17 @@ namespace HeritabilityCalculator
             Dictionary<string,double> Pc = GetPC(numOfInstances);
             if (Pc == null)
                 return;
-            List<double> Vis = new List<double>();
-            for (int i = 0; i < userData.Traits.Length; i++)
-            {
-                double V = 0;
-                for (int j = 0; j < userData.Traits.Length; j++)
-                {
-                    V += GetVariance(userData.DistanceMatrix[i, j], Pc.ElementAt(i).Value);
-                }
-                Vis.Add(V);
-            }
-            VT_Final_Result = Vis.Min();
+            //List<double> Vis = new List<double>();
+            //for (int i = 0; i < userData.Traits.Length; i++)
+            //{
+            //    double V = 0;
+            //    for (int j = 0; j < userData.Traits.Length; j++)
+            //    {
+            //        V += GetVariance(userData.DistanceMatrix[i, j], Pc.ElementAt(i).Value);
+            //    }
+            //    Vis.Add(V);
+            //}
+            VT_Final_Result = GetVariance(Pc);
             RaiseFinished(form, new FinishedEventArgs("Total Variance: " + VT_Final_Result));
         }
 

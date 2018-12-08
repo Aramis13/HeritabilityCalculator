@@ -66,6 +66,21 @@ namespace HeritabilityCalculator
             return Pc;
         }
 
+        public double GetVariance(Dictionary<string, double> Pc)
+        {
+            List<double> Vis = new List<double>();
+            for (int i = 0; i < userData.Traits.Length; i++)
+            {
+                double V = 0;
+                for (int j = 0; j < userData.Traits.Length; j++)
+                {
+                    V += GetFerchetDistance(userData.DistanceMatrix[i, j], Pc.ElementAt(i).Value);
+                }
+                Vis.Add(V);
+            }
+            return Vis.Min();
+        }
+
         /// <summary>
         /// Calcualte how many instances of each phenotype are exist
         /// </summary>
@@ -92,7 +107,7 @@ namespace HeritabilityCalculator
         /// <param name="distance"></param>
         /// <param name="Pc"></param>
         /// <returns></returns>
-        public double GetVariance(double distance, double Pc)
+        public double GetFerchetDistance(double distance, double Pc)
         {
             return Math.Pow(distance, 2) * Pc;
         }

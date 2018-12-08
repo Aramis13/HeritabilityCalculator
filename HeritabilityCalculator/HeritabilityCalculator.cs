@@ -184,7 +184,7 @@ namespace HeritabilityCalculator
             if (!success)
                 WriteToLog("Faild to start VT calculation, please try again.", MessageType.Error);
 
-            VM = new ModelVariance(UserInputData);
+            VM = new ModelVariance(UserInputData, MainBranch, MainTree);
             success = ThreadPool.QueueUserWorkItem(VM.Calculate, this);
             if (!success)
                 WriteToLog("Faild to start VM calculation, please try again.", MessageType.Error);
