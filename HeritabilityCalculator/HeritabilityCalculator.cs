@@ -70,6 +70,8 @@ namespace HeritabilityCalculator
         {
             InitializeComponent();
             WriteToLog("Insert Data", MessageType.Important);
+            WriteToLog("Number of processors on the mechine: " + Environment.ProcessorCount, MessageType.Info);
+            
         }
 
         public enum MessageType
@@ -178,16 +180,39 @@ namespace HeritabilityCalculator
 
         private void StartButton_Click(object sender, EventArgs e)
         {
-
+            this.Enabled = false;
             VT = new TotalVariance(UserInputData);
             bool success = ThreadPool.QueueUserWorkItem(VT.Calculate, this);
             if (!success)
                 WriteToLog("Faild to start VT calculation, please try again.", MessageType.Error);
 
             VM = new ModelVariance(UserInputData, MainBranch, MainTree);
-            success = ThreadPool.QueueUserWorkItem(VM.Calculate, this);
-            if (!success)
-                WriteToLog("Faild to start VM calculation, please try again.", MessageType.Error);
+            //success = ThreadPool.QueueUserWorkItem(VM.Calculate, this);
+            //if (!success)
+            //    WriteToLog("Faild to start VM calculation, please try again.", MessageType.Error);
+
+            Parallel.For(0, Environment.ProcessorCount * 10, i =>
+            {
+                VM.Calculate(this);
+            });
+
+            ModelVarianceData bestResult = null;
+            foreach (ModelVarianceData res in VM.Resaults)
+            {
+                if (bestResult == null || bestResult.Likelihood < res.Likelihood)
+                    bestResult = res;
+            }
+
+            //StartButton.Enabled = false;
+            string s = string.Empty;
+            foreach (TraitValue t in bestResult.ObservedTraits)
+            {
+                s += t.value + " => ";
+            }
+            WriteToLog("Model variance: " + bestResult.Variance + Environment.NewLine + s, MessageType.Important);
+           
+            this.Enabled = true;
+            // ToDo: Open a new window with all the data.
         }
 
         public void UpdateStartButton()

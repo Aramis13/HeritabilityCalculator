@@ -69,7 +69,7 @@ namespace HeritabilityCalculator
         public double GetVariance(Dictionary<string, double> Pc)
         {
             List<double> Vis = new List<double>();
-            for (int i = 0; i < userData.Traits.Length; i++)
+            for (int i = 0; i < Pc.Count; i++)
             {
                 double V = 0;
                 for (int j = 0; j < userData.Traits.Length; j++)

@@ -7,21 +7,27 @@ using System.Threading.Tasks;
 using Accord.Math;
 using System.Security.Cryptography;
 using Accord.Statistics.Filters;
+using Accord.Statistics.Models.Markov.Learning;
+using System.Collections.Concurrent;
 
 namespace HeritabilityCalculator
 {
 
     public class ModelVarianceData
     {
+        public Branch Root { get; set; }
+        public int T0 { get; set; }
         public double Variance { get; set; }
         public double Likelihood { get; set; }
+        public List<TraitValue> ObservedTraits { get; set; } = new List<TraitValue>();
     }
 
     public class ModelVariance : Variance
     {
-
         private Branch Root;
         private Tree tree;
+        private int itr = 0;
+        public ConcurrentBag<ModelVarianceData> Resaults = new ConcurrentBag<ModelVarianceData>();
 
         public ModelVariance(UserInput userinput, Branch root, Tree mainTree) : base(userinput)
         {
@@ -39,19 +45,18 @@ namespace HeritabilityCalculator
 
             // Alg Start
 
-            List<ModelVarianceData> data = new List<ModelVarianceData>();
+            //tree.currentPosition = 0;
+            Branch currentTree;
 
-            for (int i = 1; i <= 100; i++)
+            Tree t = new Tree(tree.input);
+            currentTree = t.Parse();
+            SimulateTree(currentTree, null);
+            List<Branch> curLeavs = new List<Branch>();
+            GetCurrentLeavs(currentTree, curLeavs);
+            ModelVarianceData bestResault = null;
+            for (int i = 1; i <= 10; i++)
             {
-                tree.currentPosition = 0;
-                Branch currentTree = tree.Parse();
-                SimulateTree(currentTree, null);
-                List<Branch> curLeavs = new List<Branch>();
-                GetCurrentLeavs(currentTree, curLeavs);
                 List<TraitValue> currentTraitValues = GetCurObservedTraitValues(curLeavs, i);
-                form.WriteToLog("Ittration " + i + ":", HeritabilityCalculator.MessageType.Info);
-                foreach (TraitValue t in currentTraitValues)
-                    form.WriteToLog(t.value, HeritabilityCalculator.MessageType.Info);
                 Dictionary<string,int> numOfInstances = GetNumOfInstances(currentTraitValues.ToArray());
                 if (numOfInstances == null)
                     continue;
@@ -60,38 +65,14 @@ namespace HeritabilityCalculator
                     continue;
                 ModelVarianceData d = new ModelVarianceData();
                 d.Variance = GetVariance(Pc);
-                //d.Likelihood = GetLikelihood(Pc, currentTraitValues); // ToDo: implement
+                d.ObservedTraits = currentTraitValues;
+                d.Likelihood = GetRandom(); // ToDo: Implement liklihood calculation function
+                if (bestResault == null || bestResault.Likelihood < d.Likelihood)
+                    bestResault = d;
             }
-        }
+            bestResault.Root = currentTree;
+            Resaults.Add(bestResault);
 
-        private double GetLikelihood(Dictionary<string, double> Pc, List<TraitValue> currentTraitValues)
-        {
-            List<string> current = new List<string>();
-            foreach (TraitValue trait in currentTraitValues)
-            {
-                current.Add(trait.value);
-            }
-
-            var codebook = new Codification("CurrentPc", current.ToArray());
-            int[] sequence = codebook.Transform(current.ToArray());
-            // Create the initial probabilities pi
-            List<double> initial = new List<double>();
-            foreach(double p in Pc.Values)
-            {
-                initial.Add(p);
-            }
-
-            // Create a new hidden Markov model
-            var hmm = new HiddenMarkovModel(userData.DistanceMatrix, userData.EmissionMatrix, initial.ToArray());
-
-            // After that, one could, for example, query the probability
-            // of a sequence occurring. We will consider the sequence
-            //int[] sequence = new int[] { 0, 1, 2 };
-
-            // And now we will evaluate its likelihood
-            double logLikelihood = hmm.LogLikelihood(sequence);
-
-            return logLikelihood;
         }
 
         // Return a random integer between a min and max value.

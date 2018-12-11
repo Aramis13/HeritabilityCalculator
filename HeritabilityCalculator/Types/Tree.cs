@@ -12,8 +12,8 @@ namespace HeritabilityCalculator
     /// </summary>
     public class Tree
     {
-        public int currentPosition;
-        private string input;
+        private int currentPosition;
+        public string input;
 
         public Tree(string text)
         {
