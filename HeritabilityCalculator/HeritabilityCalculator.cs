@@ -205,11 +205,11 @@ namespace HeritabilityCalculator
                 s += t.value + " => ";
             }
             WriteToLog("Model variance: " + bestResult.Variance + Environment.NewLine + s, MessageType.Important);
-           
+        
             this.Enabled = true;
             Thread.Sleep(2000);
             // ToDo: Open a new window with all the data.
-            TreeDraw l = new TreeDraw("Tree", bestResult.Root);
+            TreeDraw l = new TreeDraw("Tree", bestResult.Root, bestResult.ObservedTraits);
             l.Create();
             l.Open();
         }

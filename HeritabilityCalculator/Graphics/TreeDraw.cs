@@ -12,12 +12,14 @@ namespace HeritabilityCalculator
         private string title = string.Empty;
         private Branch Root;
         private string localPath = string.Empty;
+        private List<TraitValue> observed;
 
-        public TreeDraw(string header, Branch root)
+        public TreeDraw(string header, Branch root, List<TraitValue> observedValues)
         {
             title = header;
             Root = root;
             localPath = Environment.CurrentDirectory;
+            observed = observedValues;
         }
 
         public void Create()
@@ -37,11 +39,26 @@ namespace HeritabilityCalculator
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");          
             sb.AppendLine("<script src=" + localPath + "\\Graphics\\d3.v3.js></script>");
+            sb.AppendLine("<div id='tree' style='width:500px;'></div>");
+            sb.AppendLine("<div id='observed' style='width:200px;'></div>");
             sb.AppendLine("</body>");
             sb.AppendLine("<script>");
             sb.AppendLine("var treeData = [");
             AddTreeData(Root, sb);
             sb.AppendLine("];");
+            sb.AppendLine("var observedData = [");
+            for (int i = 0; i < observed.Count; i++)
+            {
+                sb.AppendLine("{");
+                sb.AppendLine("'name': '" + observed[i].value + "'");
+                if (i < observed.Count-1)
+                    sb.AppendLine(",'children': [");
+            }
+            for (int i = 0; i < observed.Count-1; i++)
+            {
+                sb.AppendLine("}]");
+            }
+            sb.AppendLine("}];");
             string s = File.ReadAllText(localPath + "\\Graphics\\treeViewController.js");
             sb.AppendLine(s);
             sb.AppendLine("</script>");
