@@ -67,6 +67,7 @@
     <Compile Include="Accessories\ModelVariance.cs" />
     <Compile Include="Accessories\TotalVariance.cs" />
     <Compile Include="Accessories\Variance.cs" />
+    <Compile Include="Graphics\TreeDraw.cs" />
     <Compile Include="HeritabilityCalculator.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,7 +106,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Graphics\d3.v3.js" />
+    <Content Include="Graphics\treeViewController.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -114,4 +118,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Accord.3.8.0\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.8.0\build\Accord.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)Graphics" "$(TargetDir)\Graphics\" /S /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
