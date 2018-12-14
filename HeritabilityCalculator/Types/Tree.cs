@@ -32,9 +32,21 @@ namespace HeritabilityCalculator
             }
             else
             {
-               // TODO: Validate input.
+                error = "Input is not in correct format";
+                int index = 0;
+                int right = 0;
+                int left = 0;
+                while (index < input.Length)
+                {
+                    if (input[index] == '(')
+                        left++;
+                    else if (input[index] == ')')
+                        right++;
+                    index++;
+                }
+                if (right == 0 || left == 0 || right != left)
+                    success = false;
             }
-
             return success;
         }
 
