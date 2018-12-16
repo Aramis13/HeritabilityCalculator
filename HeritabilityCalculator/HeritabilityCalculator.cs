@@ -209,7 +209,16 @@ namespace HeritabilityCalculator
             this.Enabled = true;
             Thread.Sleep(2000);
             // ToDo: Open a new window with all the data.
-            TreeDraw l = new TreeDraw("Tree", bestResult.Root, bestResult.ObservedTraits);
+            TreeDrawData data = new TreeDrawData()
+            {
+                Liklihood = bestResult.Likelihood,
+                observed = bestResult.ObservedTraits,
+                Root = bestResult.Root,
+                Title = "Eye Color",
+                ModelVariance = bestResult.Variance,
+                TotalVariance = VT.VT_Final_Result
+            };
+            TreeDraw l = new TreeDraw(data);
             l.Create();
             l.Open();
         }

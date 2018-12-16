@@ -107,6 +107,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Graphics\bootstrap.min.css" />
     <Content Include="Graphics\d3.v3.js" />
     <Content Include="Graphics\treeViewController.js" />
   </ItemGroup>

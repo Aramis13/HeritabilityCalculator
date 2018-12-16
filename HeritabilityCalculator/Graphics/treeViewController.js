@@ -1,7 +1,8 @@
 ﻿
 // ************** Generate the tree diagram	 *****************
+var w = document.documentElement.clientWidth;
 var margin = { top: 20, right: 120, bottom: 20, left: 120 },
-    width = 960 - margin.right - margin.left,
+    width = w - margin.right - margin.left,
     height = 500 - margin.top - margin.bottom;
 
 var i = 0,
@@ -22,6 +23,7 @@ var svg = d3.select("#tree").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var svgObserved = d3.select("#observed").append("svg")
+    .attr("class", "observed-traits")
     .attr("width", width + margin.right + margin.left)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
