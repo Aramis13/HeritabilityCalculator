@@ -52,7 +52,7 @@ namespace HeritabilityCalculator
         public const int N = 3;   // square matrix dimension (# of different phenotypes)
         public Tree MainTree;
         public string TraitName;
-    
+        public int timerCount = 0;
         
         public string[] order;      // order of phenotypic values as presented in the distances matrix
         public OpenFileDialog fileDialog;
@@ -177,21 +177,25 @@ namespace HeritabilityCalculator
             
         }
 
-        private void StartButton_Click(object sender, EventArgs e)
+        private async void StartButton_Click(object sender, EventArgs e)
         {
-            this.Enabled = false;
+            TreeBrowse.Enabled = false;
+            InputBrowse.Enabled = false;
+            StartButton.Enabled = false;
+            Log.Clear();
+            WriteToLog("Starting Calculation...", MessageType.Important);
             VT = new TotalVariance(UserInputData);
-            bool success = ThreadPool.QueueUserWorkItem(VT.Calculate, this);
-            if (!success)
-                WriteToLog("Faild to start VT calculation, please try again.", MessageType.Error);
+            List<Task> tasks = new List<Task>
+            {
+                Task.Factory.StartNew(() => VT.Calculate(this))
+            };
 
             VM = new ModelVariance(UserInputData, MainBranch, MainTree);
            
-            Parallel.For(0, Environment.ProcessorCount * 10, i =>
-            {
-                VM.Calculate(this);
-            });
-
+            for (int i = 0; i < 1000; i++)
+                tasks.Add(Task.Factory.StartNew(() => VM.Calculate(this)));
+            await Task.WhenAll(tasks);
+   
             ModelVarianceData bestResult = null;
             foreach (ModelVarianceData res in VM.Resaults)
             {
@@ -199,14 +203,9 @@ namespace HeritabilityCalculator
                     bestResult = res;
             }
 
-            string s = string.Empty;
-            foreach (TraitValue t in bestResult.ObservedTraits)
-            {
-                s += t.value + " => ";
-            }
-            WriteToLog("Model variance: " + bestResult.Variance + Environment.NewLine + s, MessageType.Important);
-        
-            this.Enabled = true;
+            TreeBrowse.Enabled = true;
+            InputBrowse.Enabled = true;
+            StartButton.Enabled = true;
             Thread.Sleep(2000);
             // ToDo: Open a new window with all the data.
             TreeDrawData data = new TreeDrawData()

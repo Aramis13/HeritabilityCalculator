@@ -1,13 +1,8 @@
-﻿using Accord.Statistics.Models.Markov;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Accord.Math;
 using System.Security.Cryptography;
-using Accord.Statistics.Filters;
-using Accord.Statistics.Models.Markov.Learning;
 using System.Collections.Concurrent;
 
 namespace HeritabilityCalculator
@@ -26,8 +21,8 @@ namespace HeritabilityCalculator
     {
         private Branch Root;
         private Tree tree;
-        private int itr = 0;
         public ConcurrentBag<ModelVarianceData> Resaults = new ConcurrentBag<ModelVarianceData>();
+
 
         public ModelVariance(UserInput userinput, Branch root, Tree mainTree) : base(userinput)
         {
@@ -45,9 +40,7 @@ namespace HeritabilityCalculator
 
             // Alg Start
 
-            //tree.currentPosition = 0;
             Branch currentTree;
-
             Tree t = new Tree(tree.input);
             currentTree = t.Parse();
             SimulateTree(currentTree, null);
@@ -63,19 +56,24 @@ namespace HeritabilityCalculator
                 Dictionary<string,double> Pc = GetPC(numOfInstances);
                 if (Pc == null)
                     continue;
-                ModelVarianceData d = new ModelVarianceData();
-                d.Variance = GetVariance(Pc);
-                d.ObservedTraits = currentTraitValues;
-                d.Likelihood = GetRandom(); // ToDo: Implement liklihood calculation function
+                ModelVarianceData d = new ModelVarianceData
+                {
+                    Variance = GetVariance(Pc),
+                    ObservedTraits = currentTraitValues,
+                    //Likelihood = GetRandom() // ToDo: Implement liklihood calculation function
+                };
                 if (bestResault == null || bestResault.Likelihood < d.Likelihood)
                     bestResault = d;
             }
             bestResault.Root = currentTree;
             Resaults.Add(bestResault);
-
+            RaiseFinished(form, new FinishedEventArgs("Finished Itteration "));
         }
 
-        // Return a random integer between a min and max value.
+        /// <summary>
+        /// Return a random integer between a min and max value.
+        /// </summary>
+        /// <returns></returns>
         private double GetRandom()
         {
             RNGCryptoServiceProvider Rand = new RNGCryptoServiceProvider();
@@ -156,9 +154,6 @@ namespace HeritabilityCalculator
             }
             if (index != -1)
             {
-                //Random rnd = new Random();
-                //double P = rnd.Next(100);
-                //P /= 100;
                 double P = GetRandom();
                 double[,] Mt = Elementwise.Multiply(userData.EmissionMatrix, distance);  // Calc matrix *t0 example
                 double[,] Q = CalculateExp(Mt); // Calc the exp matrix using taylor expansion
@@ -238,16 +233,6 @@ namespace HeritabilityCalculator
                 double facturial = Factorial(k);
                 temp = Elementwise.Divide(temp, facturial);
                 answer = Elementwise.Add(answer, temp);
-                //int z = 0;
-                //for (int i = 0; i < answer.GetLength(0); i++)
-                //{
-                //    for (int j = 0; j < answer.GetLength(0); j++)
-                //    {
-                //        if (answer[i, j] == oldanswer[i, j])
-                //            z++;
-                //    }
-                //}
-                //if (z == x.Length)
                 if (k > 120)
                 {
                     break;
@@ -329,35 +314,5 @@ namespace HeritabilityCalculator
             }
             return answer;
         }
-
-        private void print_matrix(double[,] mat)
-        {
-            int row_count = mat.GetLength(0), col_count = mat.GetLength(1);
-
-            for (int i = 0; i < row_count; i++)
-            {     // calc: Q*t
-                for (int j = 0; j < col_count; j++)
-                    Console.Out.Write("[" + mat[i, j] + "] ");
-                Console.Out.WriteLine();
-            }
-        }
-      
-
-        private void update_log(string status, Branch b, HeritabilityCalculator f)
-        {
-
-            string msg = "VM CALC: ";
-            if (status == "success")
-            {
-                msg += "random root node (" + b.TraitValue.value + ") has been generated succussfuly";
-                RaiseFinished(f, new FinishedEventArgs(msg));
-            }
-            else
-            {
-                msg += "FAILED @ ModelVariance.cs , Calculate())";
-                RaiseFinished(f, new FinishedEventArgs(msg));
-            }
-        }
-
     }
 }

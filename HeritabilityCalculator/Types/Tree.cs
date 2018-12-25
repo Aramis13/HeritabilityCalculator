@@ -14,6 +14,7 @@ namespace HeritabilityCalculator
     {
         private int currentPosition;
         public string input;
+        public double Depth { get; private set; } = 0;
 
         public Tree(string text)
         {
@@ -60,6 +61,7 @@ namespace HeritabilityCalculator
             ret.Add(ParseBranch());
             while (PeekCharacter() == ',')
             {
+                
                 currentPosition++; // ','
                 ret.Add(ParseBranch());
             }
@@ -70,6 +72,7 @@ namespace HeritabilityCalculator
             var tree = ParseSubTree();
             currentPosition++; // ':'
             tree.Length = ParseDouble();
+            Depth += tree.Length;
             return tree;
         }
         private Branch ParseSubTree()

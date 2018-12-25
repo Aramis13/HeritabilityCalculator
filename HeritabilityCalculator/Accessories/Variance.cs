@@ -21,6 +21,7 @@ namespace HeritabilityCalculator
 
         public UserInput userData;
         public event EventHandler<FinishedEventArgs> Finished;
+        int itr = 0;
 
         #endregion Fields
 
@@ -40,7 +41,7 @@ namespace HeritabilityCalculator
             if (!(sender is HeritabilityCalculator))
                 return;
             HeritabilityCalculator form = sender as HeritabilityCalculator;
-            form.WriteToLog(e.Message, HeritabilityCalculator.MessageType.Important);
+            form.WriteToLog(e.Message + (itr++), HeritabilityCalculator.MessageType.Info);
         }
 
         protected virtual void RaiseFinished(object sender, FinishedEventArgs e)
