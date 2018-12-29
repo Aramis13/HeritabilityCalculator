@@ -8,28 +8,36 @@ using System.Collections.Concurrent;
 namespace HeritabilityCalculator
 {
 
+    public class ModelVarianceContainer
+    {
+        public Branch GeneratedTree { get; set; }
+        public List<ModelVarianceData> Data { get; set; }
+    }
+
     public class ModelVarianceData
     {
-        public Branch Root { get; set; }
-        public int T0 { get; set; }
+        public double T0 { get; set; }
         public double Variance { get; set; }
-        public double Likelihood { get; set; }
         public List<TraitValue> ObservedTraits { get; set; } = new List<TraitValue>();
     }
 
     public class ModelVariance : Variance
     {
-        private Branch Root;
         private Tree tree;
-        public ConcurrentBag<ModelVarianceData> Resaults = new ConcurrentBag<ModelVarianceData>();
+        //public ConcurrentBag<ModelVarianceData> Resaults { get; private set; } = new ConcurrentBag<ModelVarianceData>();
+        public ConcurrentBag<ModelVarianceContainer> Resaults = new ConcurrentBag<ModelVarianceContainer>();
+        public double deltaT = 1;
+        private int t0Itr;
 
 
-        public ModelVariance(UserInput userinput, Branch root, Tree mainTree) : base(userinput)
+        public ModelVariance(UserInput userinput, Branch root, Tree mainTree, int Itr) : base(userinput)
         {
-            Root = root;
             tree = mainTree;
+            deltaT = tree.MaxDepth / 10;
+            t0Itr = Itr;
         }
 
+  
         public override void Calculate(object Main)
         {
             if (!(Main is HeritabilityCalculator))
@@ -39,34 +47,37 @@ namespace HeritabilityCalculator
                 return;
 
             // Alg Start
-
+ 
             Branch currentTree;
             Tree t = new Tree(tree.input);
             currentTree = t.Parse();
             SimulateTree(currentTree, null);
             List<Branch> curLeavs = new List<Branch>();
             GetCurrentLeavs(currentTree, curLeavs);
-            ModelVarianceData bestResault = null;
-            for (int i = 1; i <= 10; i++)
+            List<double> vmList = new List<double>();
+            ModelVarianceContainer container = new ModelVarianceContainer
             {
-                List<TraitValue> currentTraitValues = GetCurObservedTraitValues(curLeavs, i);
+                GeneratedTree = currentTree
+            };
+            List<ModelVarianceData> data = new List<ModelVarianceData>();
+            for (int i = 0; i <= t0Itr; i++)
+            {
+                List<TraitValue> currentTraitValues = GetCurObservedTraitValues(curLeavs, i * deltaT);
                 Dictionary<string,int> numOfInstances = GetNumOfInstances(currentTraitValues.ToArray());
                 if (numOfInstances == null)
                     continue;
                 Dictionary<string,double> Pc = GetPC(numOfInstances);
                 if (Pc == null)
                     continue;
-                ModelVarianceData d = new ModelVarianceData
-                {
+                data.Add(new ModelVarianceData() {
                     Variance = GetVariance(Pc),
                     ObservedTraits = currentTraitValues,
-                    //Likelihood = GetRandom() // ToDo: Implement liklihood calculation function
-                };
-                if (bestResault == null || bestResault.Likelihood < d.Likelihood)
-                    bestResault = d;
+                    T0 = i * deltaT
+                });
+               
             }
-            bestResault.Root = currentTree;
-            Resaults.Add(bestResault);
+            container.Data = data;
+            Resaults.Add(container);
             RaiseFinished(form, new FinishedEventArgs("Finished Itteration "));
         }
 
@@ -101,8 +112,10 @@ namespace HeritabilityCalculator
             List<TraitValue> traitvalues = new List<TraitValue>();
             foreach (Branch leave in currentLeavs)
             {
-                TraitValue t = new TraitValue();
-                t.value = GetNodeTrait(leave.TraitValue.value, t0);
+                TraitValue t = new TraitValue
+                {
+                    value = GetNodeTrait(leave.TraitValue.value, t0)
+                };
                 traitvalues.Add(t);
             }
             return traitvalues;

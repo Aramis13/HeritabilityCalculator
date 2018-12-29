@@ -14,7 +14,16 @@ namespace HeritabilityCalculator
     {
         private int currentPosition;
         public string input;
-        public double Depth { get; private set; } = 0;
+        private List<double> depths = new List<double>();
+        private double sum = 0;
+
+        public double MaxDepth
+        {
+            get
+            {
+                return depths.Max();
+            }
+        }
 
         public Tree(string text)
         {
@@ -57,11 +66,12 @@ namespace HeritabilityCalculator
         }
         private List<Branch> ParseBranchSet()
         {
+            double depth = 0;
             var ret = new List<Branch>();
             ret.Add(ParseBranch());
             while (PeekCharacter() == ',')
             {
-                
+                //double curmax = 
                 currentPosition++; // ','
                 ret.Add(ParseBranch());
             }
@@ -72,7 +82,16 @@ namespace HeritabilityCalculator
             var tree = ParseSubTree();
             currentPosition++; // ':'
             tree.Length = ParseDouble();
-            Depth += tree.Length;
+            if (tree is Leaf)
+            {
+                depths.Add(sum);
+                sum = 0;
+            }
+            else
+            {
+                sum += tree.Length;
+            }
+            //depth += tree.Length;
             return tree;
         }
         private Branch ParseSubTree()

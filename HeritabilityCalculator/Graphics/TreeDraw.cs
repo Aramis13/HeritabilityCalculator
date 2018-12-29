@@ -12,22 +12,34 @@ namespace HeritabilityCalculator
         public string Title { get; set; }
         public Branch Root { get; set; }
         public List<TraitValue> observed { get; set; }
-        public double ModelVariance { get; set; }
+        public double[] ModelVariance { get; set; }
         public double TotalVariance { get; set; }
         public double Liklihood { get; set; }
+        public double Partition { get; set; }
+        public int NumOfPartitions { get; set; }
+        public double[] X2 { get; set; }
+        public double BestItr { get; set; }
+        public int[] BestItrRes { get; set; }
+        public double DeltaT { get; set; }
+
     }
 
     class TreeDraw
     {
         private TreeDrawData data;
         private string localPath = string.Empty;
+        private double heritabilityMin;
         private double heritability;
+        private double heritabilityMax;
+        private const double tolerance = 0.9;
 
         public TreeDraw(TreeDrawData treeData)
         {
             localPath = Environment.CurrentDirectory;
             data = treeData;
-            heritability = treeData.TotalVariance / treeData.ModelVariance;
+            heritabilityMin = treeData.TotalVariance / treeData.ModelVariance[0];
+            heritability = treeData.TotalVariance / treeData.ModelVariance[1];
+            heritabilityMax = treeData.TotalVariance / treeData.ModelVariance[2];
         }
 
         public void Create()
@@ -50,18 +62,32 @@ namespace HeritabilityCalculator
             sb.AppendLine("</style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");
-            sb.AppendLine("<script src=" + localPath + "\\Graphics\\d3.v3.js></script>"); 
+            sb.AppendLine("<script src=" + localPath + "\\Graphics\\jquery-3.3.1.min.js></script>");
+            sb.AppendLine("<script src=" + localPath + "\\Graphics\\d3.v3.js></script>");
+            sb.AppendLine("<script src=" + localPath + "\\Graphics\\mdb.js></script>");
             sb.AppendLine("<link rel='stylesheet' href=" + localPath + "\\Graphics\\bootstrap.min.css></script>");
             sb.AppendLine("<h6 class='col-sm-12 title'>" + data.Title.ToUpper() + "</h6>");
-            sb.AppendLine("<div id='tree'></div>");
+            sb.AppendLine("<div id='tree' class='col-sm-12'></div>");
             sb.AppendLine("<h3 class='title'>Observed Traits</h3>");
             sb.AppendLine("<div id='observed'></div>");
-            sb.AppendLine("<h3 class='title' style='padding-top: 120px;'>Results</h3>");
+            sb.AppendLine("<h3 class='title' style='padding-top: 120px; padding-bottom: 25px;'>Results</h3>");
+            sb.AppendLine("<div class='col-sm-6' style='float:left;'>");
+            sb.AppendLine("<canvas id=\"barchart\" style=\"width: 500px; \"></canvas>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("<div class='col-sm-6' style='float:right;'>");
+            sb.AppendLine("<canvas id=\"linechart\" style=\"width: 500px; \"></canvas>");
+            sb.AppendLine("</div>");
+            //sb.AppendLine("<h3 class='title' style='padding-top: 120px;'>Results</h3>");
             sb.AppendLine("<div id='resualts' class='col-sm-12 res'>");
-            sb.AppendLine("<h4 class='col-sm-3'>Total Variance: " + data.ModelVariance + "</h4>");
-            sb.AppendLine("<h4 class='col-sm-3'>Model Variance: " + data.TotalVariance + "</h4>");
-            sb.AppendLine("<h4 class='col-sm-3'>Liklihood: " + data.Liklihood + "</h4>");
-            sb.AppendLine("<h4 class='col-sm-3'>Heritability: " + heritability + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Total Variance: " + String.Format("{0:0.00}", data.ModelVariance) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Model Variance: " + String.Format("{0:0.00}", data.TotalVariance) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Liklihood: " + data.Liklihood + "</h4>");
+            //sb.AppendLine("<h4 class='col-sm-3'>Heritability: " + String.Format("{0:0.00}", heritability) + "</h4>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("<div id='heritability' class='col-sm-12 res'>");
+            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Min): " + String.Format("{0:0.00}", heritabilityMin) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4' style='font-weight: 900;'>Heritability: " + String.Format("{0:0.00}", heritability) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Max): " + String.Format("{0:0.00}", heritabilityMax) + "</h4>");
             sb.AppendLine("</div>");
             sb.AppendLine("</body>");
             sb.AppendLine("<script>");
@@ -83,6 +109,154 @@ namespace HeritabilityCalculator
             sb.AppendLine("}];");
             string s = File.ReadAllText(localPath + "\\Graphics\\treeViewController.js");
             sb.AppendLine(s);
+
+
+            sb.AppendLine("var options = {");
+            sb.AppendLine("scales: {");
+            sb.AppendLine("yAxes: [{");
+            sb.AppendLine("scaleLabel: {");
+            sb.AppendLine("display: true,");
+            sb.AppendLine("labelString: 'Amount'");
+            sb.AppendLine("}");
+            sb.AppendLine(" }],");
+            sb.AppendLine("xAxes: [{");
+            sb.AppendLine("scaleLabel: {");
+            sb.AppendLine("display: true,");
+            sb.AppendLine("labelString: 'Variance'");
+            sb.AppendLine("}");
+            sb.AppendLine(" }]");
+            sb.AppendLine("}");
+            sb.AppendLine("};");
+            sb.AppendLine("var options1 = {");
+            sb.AppendLine("scales: {");
+            sb.AppendLine("yAxes: [{");
+            sb.AppendLine("scaleLabel: {");
+            sb.AppendLine("display: true,");
+            sb.AppendLine("labelString: 'X²'");
+            sb.AppendLine("}");
+            sb.AppendLine(" }],");
+            sb.AppendLine("xAxes: [{");
+            sb.AppendLine("scaleLabel: {");
+            sb.AppendLine("display: true,");
+            sb.AppendLine("labelString: '∆t'");
+            sb.AppendLine("}");
+            sb.AppendLine(" }]");
+            sb.AppendLine("}");
+            sb.AppendLine("};");
+
+            sb.AppendLine("var ctx = document.getElementById(\"barchart\").getContext('2d');");
+            sb.AppendLine("var myChart = new Chart(ctx, {");
+            sb.AppendLine("type: 'bar',");
+            sb.AppendLine("data: {");
+            sb.Append("labels: [");
+            
+            for (int i = 0; i < data.NumOfPartitions; i++)
+            {
+                if (i < data.NumOfPartitions-1)
+                    sb.Append("'" + String.Format("{0:0.00}", data.Partition * i) + "-" + String.Format("{0:0.00}", data.Partition * (i+1)) + "',");
+                else
+                    sb.Append("'" + String.Format("{0:0.00}", data.Partition * i) + "-" + String.Format("{0:0.00}", data.Partition * (i + 1)) + "'");
+            }
+            sb.AppendLine("],");
+            sb.AppendLine("datasets: [{");
+            sb.AppendLine("label: 'Elongation " + String.Format("{0:0.00}", data.DeltaT * data.BestItr) + "',");
+            sb.Append("data: [");
+            for (int i = 0; i < data.NumOfPartitions; i++)
+            {
+                if (i < data.NumOfPartitions - 1)
+                    sb.Append(data.BestItrRes[i] + ",");
+                else
+                    sb.Append(data.BestItrRes[i]);
+            }
+            sb.AppendLine("],");
+            sb.AppendLine("backgroundColor: [");
+            sb.AppendLine("'rgba(255, 99, 132, 0.2)',");
+            sb.AppendLine("'rgba(54, 162, 235, 0.2)',");
+            sb.AppendLine("'rgba(255, 206, 86, 0.2)',");
+            sb.AppendLine("'rgba(75, 192, 192, 0.2)',");
+            sb.AppendLine("'rgba(153, 102, 255, 0.2)',");
+            sb.AppendLine("'rgba(255, 159, 64, 0.2)'");
+            sb.AppendLine("],");
+
+            sb.AppendLine("borderColor: [");
+            sb.AppendLine("'rgba(255,99,132,1)',");
+            sb.AppendLine("'rgba(54, 162, 235, 1)',");
+            sb.AppendLine("'rgba(255, 206, 86, 1)',");
+            sb.AppendLine("'rgba(75, 192, 192, 1)',");
+            sb.AppendLine("'rgba(153, 102, 255, 1)',");
+            sb.AppendLine("'rgba(255, 159, 64, 1)'");
+            sb.AppendLine("],");
+            sb.AppendLine("borderWidth: 1");
+            sb.AppendLine("}]");
+            sb.AppendLine("},");
+            sb.AppendLine("options: options");
+            sb.AppendLine("});");
+
+            sb.AppendLine("var ctx1 = document.getElementById(\"linechart\").getContext('2d');");
+            sb.AppendLine("var myChart = new Chart(ctx1, {");
+            sb.AppendLine("type: 'line',");
+            sb.AppendLine("data: {");
+            sb.Append("labels: [");
+
+            for (int i = 0; i < data.X2.Length; i++)
+            {
+                if (i < data.X2.Length - 1)
+                    sb.Append("'" + String.Format("{0:0.00}", data.DeltaT * i) + "',");
+                else
+                    sb.Append("'" + String.Format("{0:0.00}", data.DeltaT * i) + "'");
+            }
+            sb.AppendLine("],");
+            sb.AppendLine("datasets: [{");
+            sb.AppendLine("label: 'X² Distribution',");
+            sb.Append("data: [");
+            for (int i = 0; i < data.X2.Length; i++)
+            {
+                if (i < data.X2.Length - 1)
+                    sb.Append(data.X2[i] + ",");
+                else
+                    sb.Append(data.X2[i]);
+            }
+            sb.AppendLine("],");
+            sb.AppendLine("backgroundColor: [");
+            sb.AppendLine("'rgba(255, 99, 132, 0.2)',");
+            sb.AppendLine("'rgba(54, 162, 235, 0.2)',");
+            sb.AppendLine("'rgba(255, 206, 86, 0.2)',");
+            sb.AppendLine("'rgba(75, 192, 192, 0.2)',");
+            sb.AppendLine("'rgba(153, 102, 255, 0.2)',");
+            sb.AppendLine("'rgba(255, 159, 64, 0.2)'");
+            sb.AppendLine("],");
+
+            sb.AppendLine("borderColor: [");
+            sb.AppendLine("'rgba(255,99,132,1)',");
+            sb.AppendLine("'rgba(54, 162, 235, 1)',");
+            sb.AppendLine("'rgba(255, 206, 86, 1)',");
+            sb.AppendLine("'rgba(75, 192, 192, 1)',");
+            sb.AppendLine("'rgba(153, 102, 255, 1)',");
+            sb.AppendLine("'rgba(255, 159, 64, 1)'");
+            sb.AppendLine("],");
+            sb.AppendLine("borderWidth: 1");
+            sb.AppendLine("},{");
+            sb.Append("data: [");
+            for (int i = 0; i < data.X2.Length; i++)
+            {
+                if (i < data.X2.Length - 1)
+                    sb.Append(tolerance + ", ");
+                else
+                    sb.Append(tolerance);
+            }
+            sb.AppendLine("],");
+            sb.AppendLine("label: 'ε Tolerance',");
+            sb.AppendLine("borderColor: [");
+            sb.AppendLine("'#6f42c1'");
+            sb.AppendLine("],");
+            sb.AppendLine("fill: false,");
+            sb.AppendLine("borderWidth: 1");
+
+            sb.AppendLine("}]");
+            sb.AppendLine("},");
+            sb.AppendLine("options: options1");
+            sb.AppendLine("});");
+
             sb.AppendLine("</script>");
             if (!Directory.Exists(Path.Combine(localPath, "TreeResualts")))
                 Directory.CreateDirectory(Path.Combine(localPath, "TreeResualts"));

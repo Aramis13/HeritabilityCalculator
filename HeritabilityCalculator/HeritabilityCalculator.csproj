@@ -109,6 +109,8 @@
   <ItemGroup>
     <Content Include="Graphics\bootstrap.min.css" />
     <Content Include="Graphics\d3.v3.js" />
+    <Content Include="Graphics\jquery-3.3.1.min.js" />
+    <Content Include="Graphics\mdb.js" />
     <Content Include="Graphics\treeViewController.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

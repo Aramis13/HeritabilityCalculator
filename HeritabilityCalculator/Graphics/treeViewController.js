@@ -64,7 +64,11 @@ function update(source) {
 
     nodeEnter.append("circle")
         .attr("r", 1e-6)
-        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .style("fill", function (d) {
+            if (d.name === "red") return "red";
+            if (d.name === "green") return "green";
+            if (d.name === "blue") return "blue";
+        });
 
     nodeEnter.append("text")
         .attr("x", function (d) { return d.children || d._children ? -13 : 13; })
@@ -80,7 +84,11 @@ function update(source) {
 
     nodeUpdate.select("circle")
         .attr("r", 10)
-        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .style("fill", function (d) {
+            if (d.name === "red") return "red";
+            if (d.name === "green") return "green";
+            if (d.name === "blue") return "blue";
+        });
 
     nodeUpdate.select("text")
         .style("fill-opacity", 1);
@@ -151,7 +159,11 @@ function updateObserved(source) {
 
     nodeEnter.append("circle")
         .attr("r", 1e-6)
-        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .style("fill", function (d) {
+            if (d.name === "red") return "red";
+            if (d.name === "green") return "green";
+            if (d.name === "blue") return "blue";
+        });
 
     nodeEnter.append("text")
         .attr("x", function (d) { return d.children || d._children ? -13 : 13; })
@@ -167,7 +179,11 @@ function updateObserved(source) {
 
     nodeUpdate.select("circle")
         .attr("r", 10)
-        .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+        .style("fill", function (d) {
+            if (d.name === "red") return "red";
+            if (d.name === "green") return "green";
+            if (d.name === "blue") return "blue";
+        });
 
     nodeUpdate.select("text")
         .style("fill-opacity", 1);

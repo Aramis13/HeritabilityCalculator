@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -49,11 +50,13 @@ namespace HeritabilityCalculator
 
         #region Fields
 
-        public const int N = 3;   // square matrix dimension (# of different phenotypes)
         public Tree MainTree;
         public string TraitName;
-        public int timerCount = 0;
-        
+        public const int numOftrees = 1000;
+        public const int t0Itr = 100;
+        public const int numOfPartitions = 10;
+
+
         public string[] order;      // order of phenotypic values as presented in the distances matrix
         public OpenFileDialog fileDialog;
         public Branch MainBranch;
@@ -190,36 +193,145 @@ namespace HeritabilityCalculator
                 Task.Factory.StartNew(() => VT.Calculate(this))
             };
 
-            VM = new ModelVariance(UserInputData, MainBranch, MainTree);
-           
-            for (int i = 0; i < 1000; i++)
-                tasks.Add(Task.Factory.StartNew(() => VM.Calculate(this)));
+            VM = new ModelVariance(UserInputData, MainBranch, MainTree, t0Itr);
+
+            //for (int i = 0; i < numOftrees; i++)
+            //    tasks.Add(Task.Factory.StartNew(() => VM.Calculate(this)));
+            tasks.Add(Task.Factory.StartNew(() => Parallel.For(0, numOftrees, i => VM.Calculate(this))));
             await Task.WhenAll(tasks);
-   
-            ModelVarianceData bestResult = null;
-            foreach (ModelVarianceData res in VM.Resaults)
-            {
-                if (bestResult == null || bestResult.Likelihood < res.Likelihood)
-                    bestResult = res;
-            }
+
+            WriteToLog("Processing Results...", MessageType.Important);
+            double partition = GetPartitionsDelta(VM.Resaults);
+            int[,] baskets = GetBaskets(VM.Resaults, partition);
 
             TreeBrowse.Enabled = true;
             InputBrowse.Enabled = true;
             StartButton.Enabled = true;
-            Thread.Sleep(2000);
-            // ToDo: Open a new window with all the data.
+
+            int vtPartition = GetPartition(partition, VT.VT_Final_Result);
+            int bestItr = GetMaxT0(baskets, vtPartition);
+
+            int[] bestItrArr = new int[numOfPartitions];
+            for(int i = 0; i < numOfPartitions; i++)
+            {
+                bestItrArr[i] = baskets[bestItr, i];
+            }
+            double[] liklihoods = GetLiklihoods(baskets, vtPartition);
+            double[] vmResualts = GetVM(VM.Resaults, bestItr);
+            double liklihood = bestItrArr[vtPartition] / (double)numOftrees;
+            double[] X2 = GetX2(liklihoods, bestItr);
+            Branch bestTree = VM.Resaults.ElementAt(0).GeneratedTree;
+            List<TraitValue> traitValues = VM.Resaults.ElementAt(0).Data.ElementAt(bestItr).ObservedTraits;
+            
             TreeDrawData data = new TreeDrawData()
             {
-                Liklihood = bestResult.Likelihood,
-                observed = bestResult.ObservedTraits,
-                Root = bestResult.Root,
+                Liklihood = liklihood,
+                observed = traitValues,
+                Root = bestTree,
                 Title = "Eye Color",
-                ModelVariance = bestResult.Variance,
-                TotalVariance = VT.VT_Final_Result
+                ModelVariance = vmResualts,
+                TotalVariance = VT.VT_Final_Result,
+                NumOfPartitions = numOfPartitions,
+                Partition = partition,
+                BestItrRes = bestItrArr,
+                BestItr = bestItr,
+                X2 = X2,
+                DeltaT = VM.deltaT
+
             };
             TreeDraw l = new TreeDraw(data);
             l.Create();
             l.Open();
+        }
+
+        public double[] GetX2(double[] liklihoods, int bestItr)
+        {
+            double[] res = new double[t0Itr];
+            for (int i = 0; i < t0Itr; i++)
+            {
+                if (liklihoods[i] != 0)
+                    res[i] = -2 * Math.Log(liklihoods[i] / liklihoods[bestItr]);
+            }
+            return res;
+        }
+
+        public double[] GetLiklihoods(int[,] baskets, int vtPartition)
+        {
+            double[] res = new double[t0Itr];
+            for (int i = 0; i < t0Itr; i++)
+            {
+                res[i] = baskets[i, vtPartition] / (double)numOftrees;
+            }
+            return res;
+        }
+
+        public double[] GetVM(ConcurrentBag<ModelVarianceContainer> Resaults, int bestItr)
+        {
+            double sumMin = 0;
+            double sum = 0;
+            double sumMax = 0;
+            for (int i = 0; i < numOftrees; i++)
+            {
+                sumMin += Resaults.ElementAt(i).Data.ElementAt(bestItr-1).Variance;
+                sum += Resaults.ElementAt(i).Data.ElementAt(bestItr).Variance;
+                sumMax += Resaults.ElementAt(i).Data.ElementAt(bestItr+1).Variance;
+            }
+            sumMin /= numOftrees;
+            sum /= numOftrees;
+            sumMax /= numOftrees;
+            return new double[] { sumMin, sum, sumMax };
+        }
+
+        public int GetMaxT0(int[,] baskets, int vtPartition)
+        {
+            int max = 0;
+            int itr = 0;
+            for (int i = 0; i< baskets.GetLength(0); i++)
+            {
+                if (max < baskets[i, vtPartition])
+                {
+                    max = baskets[i, vtPartition];
+                    itr = i;
+                }
+            }
+            return itr;
+        }
+
+        public int[,] GetBaskets(ConcurrentBag<ModelVarianceContainer> Resaults, double partition)
+        {
+            int[,] res = new int[t0Itr, numOfPartitions];
+            for(int i = 0; i < t0Itr; i++)
+            {
+                for(int j = 0; j < numOftrees; j++)
+                {
+                    int p = GetPartition(partition, Resaults.ElementAt(j).Data.ElementAt(i).Variance);
+                    res[i, p]++;
+                }
+            }
+            return res;
+        }
+
+        public int GetPartition(double partition, double variance)
+        {
+            for (int i = 0; i < numOfPartitions-1; i++)
+            {
+                if (partition*i < variance && variance < partition * (i + 1))
+                {
+                    return i;
+                }
+            }
+            return numOfPartitions - 1;
+        }
+
+        public double GetPartitionsDelta(ConcurrentBag<ModelVarianceContainer> Resaults)
+        {
+            List<double> Vs = new List<double>();
+            foreach(ModelVarianceContainer container in Resaults)
+            {
+                Vs.Add(container.Data.ElementAt(t0Itr).Variance);
+            }
+            double max = Vs.Max();
+            return max / 10;
         }
 
         public void UpdateStartButton()
