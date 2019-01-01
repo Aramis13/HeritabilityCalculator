@@ -21,7 +21,7 @@ namespace HeritabilityCalculator
         public double BestItr { get; set; }
         public int[] BestItrRes { get; set; }
         public double DeltaT { get; set; }
-
+        public int NumOfTrees { set; get; }
     }
 
     class TreeDraw
@@ -31,7 +31,8 @@ namespace HeritabilityCalculator
         private double heritabilityMin;
         private double heritability;
         private double heritabilityMax;
-        private const double tolerance = 0.9;
+        private const double tolerance = 0.7;
+        private int itr = 0;
 
         public TreeDraw(TreeDrawData treeData)
         {
@@ -52,6 +53,7 @@ namespace HeritabilityCalculator
             sb.AppendLine("<title>" + data.Title + "</title>");
             sb.AppendLine("<style>");
             sb.AppendLine("body {background: linear-gradient(to right, #757F9A, #D7DDE8);}");
+            sb.AppendLine(".svg{width:100%}");
             sb.AppendLine(".observed-traits {position: absolute; top: 450px;}");
             sb.AppendLine(".res {top: 70px; text-align: center; display: inline-flex; height: 100px;}");
             sb.AppendLine(".node {cursor: pointer;}");
@@ -76,18 +78,16 @@ namespace HeritabilityCalculator
             sb.AppendLine("</div>");
             sb.AppendLine("<div class='col-sm-6' style='float:right;'>");
             sb.AppendLine("<canvas id=\"linechart\" style=\"width: 500px; \"></canvas>");
-            sb.AppendLine("</div>");
-            //sb.AppendLine("<h3 class='title' style='padding-top: 120px;'>Results</h3>");
+            sb.AppendLine("</div>");          
             sb.AppendLine("<div id='resualts' class='col-sm-12 res'>");
-            sb.AppendLine("<h4 class='col-sm-4'>Total Variance: " + String.Format("{0:0.00}", data.ModelVariance) + "</h4>");
-            sb.AppendLine("<h4 class='col-sm-4'>Model Variance: " + String.Format("{0:0.00}", data.TotalVariance) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Total Variance: " + String.Format("{0:0.00}", data.TotalVariance) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Model Variance: " + String.Format("{0:0.00}", data.ModelVariance[1]) + "</h4>");
             sb.AppendLine("<h4 class='col-sm-4'>Liklihood: " + data.Liklihood + "</h4>");
-            //sb.AppendLine("<h4 class='col-sm-3'>Heritability: " + String.Format("{0:0.00}", heritability) + "</h4>");
             sb.AppendLine("</div>");
             sb.AppendLine("<div id='heritability' class='col-sm-12 res'>");
-            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Min): " + String.Format("{0:0.00}", heritabilityMin) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Min): " + String.Format("{0:0.00}", heritabilityMax) + "</h4>");
             sb.AppendLine("<h4 class='col-sm-4' style='font-weight: 900;'>Heritability: " + String.Format("{0:0.00}", heritability) + "</h4>");
-            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Max): " + String.Format("{0:0.00}", heritabilityMax) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Max): " + String.Format("{0:0.00}", heritabilityMin) + "</h4>");
             sb.AppendLine("</div>");
             sb.AppendLine("</body>");
             sb.AppendLine("<script>");
@@ -116,7 +116,7 @@ namespace HeritabilityCalculator
             sb.AppendLine("yAxes: [{");
             sb.AppendLine("scaleLabel: {");
             sb.AppendLine("display: true,");
-            sb.AppendLine("labelString: 'Amount'");
+            sb.AppendLine("labelString: 'Percentage %'");
             sb.AppendLine("}");
             sb.AppendLine(" }],");
             sb.AppendLine("xAxes: [{");
@@ -164,9 +164,9 @@ namespace HeritabilityCalculator
             for (int i = 0; i < data.NumOfPartitions; i++)
             {
                 if (i < data.NumOfPartitions - 1)
-                    sb.Append(data.BestItrRes[i] + ",");
+                    sb.Append(String.Format("{0:0.00}", (data.BestItrRes[i] / (double)data.NumOfTrees) * 100) + ",");
                 else
-                    sb.Append(data.BestItrRes[i]);
+                    sb.Append(String.Format("{0:0.00}", (data.BestItrRes[i] / (double)data.NumOfTrees) * 100));
             }
             sb.AppendLine("],");
             sb.AppendLine("backgroundColor: [");
@@ -288,6 +288,7 @@ namespace HeritabilityCalculator
                 sb.AppendLine("]");
             }
             sb.Append("}");
+            itr++;
         }
 
     }

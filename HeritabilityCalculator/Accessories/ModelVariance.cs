@@ -4,6 +4,7 @@ using System.Linq;
 using Accord.Math;
 using System.Security.Cryptography;
 using System.Collections.Concurrent;
+using System.IO;
 
 namespace HeritabilityCalculator
 {
@@ -23,17 +24,18 @@ namespace HeritabilityCalculator
 
     public class ModelVariance : Variance
     {
-        private Tree tree;
-        //public ConcurrentBag<ModelVarianceData> Resaults { get; private set; } = new ConcurrentBag<ModelVarianceData>();
+        //private Tree tree;
+        private Bio.Phylogenetics.Tree tree;
         public ConcurrentBag<ModelVarianceContainer> Resaults = new ConcurrentBag<ModelVarianceContainer>();
         public double deltaT = 1;
         private int t0Itr;
 
 
-        public ModelVariance(UserInput userinput, Branch root, Tree mainTree, int Itr) : base(userinput)
+        public ModelVariance(UserInput userinput, Bio.Phylogenetics.Tree root, Tree mainTree, int Itr) : base(userinput)
         {
-            tree = mainTree;
-            deltaT = tree.MaxDepth / 10;
+            tree = root;
+            //tree = mainTree;
+            //deltaT = tree.MaxDepth / 40;
             t0Itr = Itr;
         }
 
@@ -48,9 +50,10 @@ namespace HeritabilityCalculator
 
             // Alg Start
  
-            Branch currentTree;
-            Tree t = new Tree(tree.input);
-            currentTree = t.Parse();
+            Branch currentTree = new Branch();
+            //Tree t = new Tree(tree.input);
+            //currentTree = t.Parse();
+            form.CreateMainTree(tree.Root, currentTree, 0, 0);
             SimulateTree(currentTree, null);
             List<Branch> curLeavs = new List<Branch>();
             GetCurrentLeavs(currentTree, curLeavs);
@@ -170,6 +173,18 @@ namespace HeritabilityCalculator
                 double P = GetRandom();
                 double[,] Mt = Elementwise.Multiply(userData.EmissionMatrix, distance);  // Calc matrix *t0 example
                 double[,] Q = CalculateExp(Mt); // Calc the exp matrix using taylor expansion
+                string s = string.Empty;
+                //for (int i = 0; i < Q.GetLength(0); i++)
+                //{
+                //    for (int j = 0; j < Q.GetLength(1); j++)
+                //    {
+                //        if (j < Q.GetLength(1) - 1)
+                //            s += Q[i, j] + ",";
+                //        else
+                //            s += Q[i, j] + Environment.NewLine;
+                //    }
+                //}
+                //File.WriteAllText("C:\\Users\\Idan\\Desktop\\Test2.csv", s);
                 double[] probs = Q.GetRow(index);
                 Dictionary<string, double> traitQs = new Dictionary<string, double>(0);
                 for (int j = 0; j < userData.Traits.Length; j++)
@@ -177,26 +192,26 @@ namespace HeritabilityCalculator
                     traitQs.Add(userData.Traits[j], probs[j]);
                 }
                 var sortedProbs = traitQs.ToList();
-                sortedProbs.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-                
                 if (P < sortedProbs.ElementAt(0).Value)
                 {
                     trait = sortedProbs.ElementAt(0).Key;
                 }
-                else if (P > sortedProbs.ElementAt(sortedProbs.Count - 1).Value)
-                {
-                    trait = sortedProbs.ElementAt(sortedProbs.Count - 1).Key;
-                }
                 else
                 {
-                    for (int i = 0; i < userData.Traits.Length-1; i++)
+                    double sum = sortedProbs.ElementAt(0).Value;
+                    for (int i = 1; i < userData.Traits.Length - 1; i++)
                     {
-                        if (sortedProbs.ElementAt(i).Value <= P && P < sortedProbs.ElementAt(i+1).Value)
+                        sum += sortedProbs.ElementAt(i).Value;
+                        if (P < sum)
                         {
-                            trait = userData.Traits[i+1];
+                            trait = sortedProbs.ElementAt(i).Key;
                             break;
                         }
                     }
+                }
+                if (trait == null)
+                {
+                    trait = sortedProbs.ElementAt(userData.Traits.Length-1).Key;
                 }
             }
             return trait;

@@ -66,12 +66,10 @@ namespace HeritabilityCalculator
         }
         private List<Branch> ParseBranchSet()
         {
-            double depth = 0;
             var ret = new List<Branch>();
             ret.Add(ParseBranch());
             while (PeekCharacter() == ',')
             {
-                //double curmax = 
                 currentPosition++; // ','
                 ret.Add(ParseBranch());
             }

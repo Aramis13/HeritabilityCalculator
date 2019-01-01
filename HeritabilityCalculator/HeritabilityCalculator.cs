@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Accord.Statistics.Models.Markov.Learning;
+using Bio.IO.Newick;
 using Newtonsoft.Json;
 
 namespace HeritabilityCalculator
@@ -52,14 +53,15 @@ namespace HeritabilityCalculator
 
         public Tree MainTree;
         public string TraitName;
-        public const int numOftrees = 1000;
-        public const int t0Itr = 100;
+        public const int numOftrees = 100;
+        public const int t0Itr = 10;
         public const int numOfPartitions = 10;
 
 
         public string[] order;      // order of phenotypic values as presented in the distances matrix
         public OpenFileDialog fileDialog;
         public Branch MainBranch;
+        public Bio.Phylogenetics.Tree tree;
         public bool TreeValid = false;
         public bool UserInputValid = false;
         public UserInput UserInputData;
@@ -116,14 +118,20 @@ namespace HeritabilityCalculator
             {
                 try
                 {
-                    MainTree = new Tree(newickTree);
-                    if (!MainTree.ValidateTree(out msg))
-                    {
-                        TreeValid = false;
-                        WriteToLog(msg, MessageType.Error);
-                        throw new Exception();
-                    }
-                    MainBranch = MainTree.Parse();
+                    //MainTree = new Tree(newickTree);
+                    //if (!MainTree.ValidateTree(out msg))
+                    //{
+                    //    TreeValid = false;
+                    //    WriteToLog(msg, MessageType.Error);
+                    //    throw new Exception();
+                    //}
+                    //MainBranch = MainTree.Parse();
+                    var parser = new NewickParser();
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine(newickTree);
+                    tree = parser.Parse(sb);
+                    MainBranch = new Branch();
+                    CreateMainTree(tree.Root, MainBranch, 0, 0);
                     TreeValid = true;
                     msg = "Tree uploaded successfully";
                     type = MessageType.Success;
@@ -141,6 +149,22 @@ namespace HeritabilityCalculator
                 TreeValid = false;
             UpdateStartButton();
             WriteToLog(msg, type);
+        }
+
+        List<double> depths = new List<double>();
+        public void CreateMainTree(Bio.Phylogenetics.Node node, Branch branch, double edge, double max)
+        {
+            max += edge;
+            if (node.IsLeaf)
+                depths.Add(max);
+            branch.Length = edge;
+            branch.SubBranches = new List<Branch>();
+            for (int i = 0; i < node.Children.Count; i++)
+            {
+                branch.SubBranches.Add(new Branch());
+                CreateMainTree(node.Children.Keys.ElementAt(i), branch.SubBranches.ElementAt(i), node.Edges.ElementAt(i).Distance, max);
+            }
+           
         }
 
         private void InputBrowse_Click(object sender, EventArgs e)
@@ -193,10 +217,8 @@ namespace HeritabilityCalculator
                 Task.Factory.StartNew(() => VT.Calculate(this))
             };
 
-            VM = new ModelVariance(UserInputData, MainBranch, MainTree, t0Itr);
-
-            //for (int i = 0; i < numOftrees; i++)
-            //    tasks.Add(Task.Factory.StartNew(() => VM.Calculate(this)));
+            VM = new ModelVariance(UserInputData, tree, MainTree, t0Itr);
+            VM.deltaT = depths.Max() / 40;
             tasks.Add(Task.Factory.StartNew(() => Parallel.For(0, numOftrees, i => VM.Calculate(this))));
             await Task.WhenAll(tasks);
 
@@ -212,7 +234,7 @@ namespace HeritabilityCalculator
             int bestItr = GetMaxT0(baskets, vtPartition);
 
             int[] bestItrArr = new int[numOfPartitions];
-            for(int i = 0; i < numOfPartitions; i++)
+            for (int i = 0; i < numOfPartitions; i++)
             {
                 bestItrArr[i] = baskets[bestItr, i];
             }
@@ -222,7 +244,7 @@ namespace HeritabilityCalculator
             double[] X2 = GetX2(liklihoods, bestItr);
             Branch bestTree = VM.Resaults.ElementAt(0).GeneratedTree;
             List<TraitValue> traitValues = VM.Resaults.ElementAt(0).Data.ElementAt(bestItr).ObservedTraits;
-            
+
             TreeDrawData data = new TreeDrawData()
             {
                 Liklihood = liklihood,
@@ -236,8 +258,8 @@ namespace HeritabilityCalculator
                 BestItrRes = bestItrArr,
                 BestItr = bestItr,
                 X2 = X2,
-                DeltaT = VM.deltaT
-
+                DeltaT = VM.deltaT,
+                NumOfTrees = numOftrees
             };
             TreeDraw l = new TreeDraw(data);
             l.Create();
@@ -272,9 +294,12 @@ namespace HeritabilityCalculator
             double sumMax = 0;
             for (int i = 0; i < numOftrees; i++)
             {
-                sumMin += Resaults.ElementAt(i).Data.ElementAt(bestItr-1).Variance;
+                if (bestItr != 0)
+                    sumMin += Resaults.ElementAt(i).Data.ElementAt(bestItr - 1).Variance;
+                else
+                    sumMin += Resaults.ElementAt(i).Data.ElementAt(bestItr).Variance;
                 sum += Resaults.ElementAt(i).Data.ElementAt(bestItr).Variance;
-                sumMax += Resaults.ElementAt(i).Data.ElementAt(bestItr+1).Variance;
+                sumMax += Resaults.ElementAt(i).Data.ElementAt(bestItr + 1).Variance;
             }
             sumMin /= numOftrees;
             sum /= numOftrees;
@@ -300,14 +325,20 @@ namespace HeritabilityCalculator
         public int[,] GetBaskets(ConcurrentBag<ModelVarianceContainer> Resaults, double partition)
         {
             int[,] res = new int[t0Itr, numOfPartitions];
+            string s = string.Empty;
             for(int i = 0; i < t0Itr; i++)
             {
                 for(int j = 0; j < numOftrees; j++)
                 {
+                    //if (j < numOftrees-1)
+                    //    s += Resaults.ElementAt(j).Data.ElementAt(i).Variance + ",";
+                    //else
+                    //    s += Resaults.ElementAt(j).Data.ElementAt(i).Variance + Environment.NewLine;
                     int p = GetPartition(partition, Resaults.ElementAt(j).Data.ElementAt(i).Variance);
                     res[i, p]++;
                 }
             }
+            //File.WriteAllText("C:\\Users\\Idan\\Desktop\\TestV.csv", s);
             return res;
         }
 
@@ -315,7 +346,7 @@ namespace HeritabilityCalculator
         {
             for (int i = 0; i < numOfPartitions-1; i++)
             {
-                if (partition*i < variance && variance < partition * (i + 1))
+                if (partition*i < variance && variance <= partition * (i + 1))
                 {
                     return i;
                 }

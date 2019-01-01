@@ -32,7 +32,7 @@ namespace HeritabilityCalculator
 
     public class TraitValue
     {
-        public string Name;
+        public string Name = string.Empty;
         public string value;
     }
 }
