@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpTOC>
+
+  <HelpTOCNode Id="271aae8c-f9ac-4529-a9c3-df96c4d39371" Title="Heritability Calculator" Url="html/66ccbaf1-5296-5725-c069-06fc358d4ff6.htm">
+    <HelpTOCNode Id="b39b70b3-6650-490a-aeb7-4fe79c06eb79" Title="HeritabilityCalculator" Url="html/79d71f17-02db-8fe9-85c2-46d0682e9a96.htm">
+      <HelpTOCNode Id="9e83eca1-0ce5-4cbe-8891-1c6418000978" Title="Branch Class" Url="html/94e6ffa2-e099-aad5-852d-7dbff27971a7.htm">
+        <HelpTOCNode Title="Branch Constructor " Url="html/cd484162-147f-cd79-87cc-1b50c4d9f2d8.htm" />
+        <HelpTOCNode Id="7e468ed9-6761-49cc-97c1-15d5c95511f8" Title="Branch Properties" Url="html/b30971fa-5814-20e3-eca1-3259a14df8e6.htm">
+          <HelpTOCNode Title="Length Property " Url="html/81dfae7f-f9b4-a5d1-d69c-bf43e9dd9e27.htm" />
+          <HelpTOCNode Title="SubBranches Property " Url="html/11643c39-220a-555d-f95a-72aa2c362778.htm" />
+          <HelpTOCNode Title="TraitValue Property " Url="html/d54ba60e-78b8-d8c4-5c3d-69ce25c87e1c.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Branch Methods" Url="html/078d2337-4a46-1e33-3cd9-19a62865587d.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="1a439d76-0fd2-420b-b53f-b2bbce30d8a6" Title="FinishedEventArgs Class" Url="html/276d23b6-02c7-9e4a-1be0-e097317cb822.htm">
+        <HelpTOCNode Title="FinishedEventArgs Constructor " Url="html/6900c468-d395-d2d8-7a8a-4f4278e13845.htm" />
+        <HelpTOCNode Id="1c724277-dedc-4b7c-9323-43fb509278d0" Title="FinishedEventArgs Properties" Url="html/c702c70f-98c8-97b5-c0c2-9070f1e37041.htm">
+          <HelpTOCNode Title="Message Property " Url="html/b7ad7c54-68cc-98f9-0609-b8fec91ad071.htm" />
+          <HelpTOCNode Title="UpdateProgress Property " Url="html/c72fb0a7-4551-39d1-13ce-8292b5d19a58.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="FinishedEventArgs Methods" Url="html/90db0408-eba1-4684-faf2-103529b9471f.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="53e01c0d-fb3b-408a-a735-9f5a964bf594" Title="HeritabilityCalculator Class" Url="html/fe7a2672-011a-b59a-f40b-6ee27ebc1dba.htm">
+        <HelpTOCNode Title="HeritabilityCalculator Constructor " Url="html/5274285b-272a-2f4e-237a-afbecc29c235.htm" />
+        <HelpTOCNode Title="HeritabilityCalculator Properties" Url="html/08c2f79a-5de0-e5ca-0838-39bd5e13e471.htm" />
+        <HelpTOCNode Id="f3ab70cb-8f37-4bfe-8713-6a14a8a0616a" Title="HeritabilityCalculator Methods" Url="html/bcd8284c-b054-0b7e-5418-28206b3fc262.htm">
+          <HelpTOCNode Title="CreateMainTree Method " Url="html/7249b334-263e-9617-a587-2376a1812a13.htm" />
+          <HelpTOCNode Id="b83a7e5b-06f9-4f16-afd6-b21327bf7763" Title="Dispose Method " Url="html/c42eaa1d-1e5b-9666-38dc-ec7c02d8fde6.htm">
+            <HelpTOCNode Title="Dispose Method (Boolean)" Url="html/c758729d-33b5-0e10-8aca-05f083b2462b.htm" />
+          </HelpTOCNode>
+          <HelpTOCNode Title="GetBaskets Method " Url="html/2ea2b5d8-abda-0546-2e29-1b457999b5f5.htm" />
+          <HelpTOCNode Title="GetFileString Method " Url="html/fa2eb6e6-f94c-7863-0bd8-968f6d7731f2.htm" />
+          <HelpTOCNode Title="GetLiklihoods Method " Url="html/a4c2d363-69be-72cc-665e-279058e1e0d1.htm" />
+          <HelpTOCNode Title="GetMaxT0 Method " Url="html/4b4b3585-9e38-4ffe-6a17-4d4a781cd494.htm" />
+          <HelpTOCNode Title="GetPartition Method " Url="html/252ac8fa-b4bd-6801-8cf1-2d59ef0ec7e5.htm" />
+          <HelpTOCNode Title="GetPartitionsDelta Method " Url="html/ee7b47e2-e98a-925f-550a-c590d2659d92.htm" />
+          <HelpTOCNode Title="GetVM Method " Url="html/903a0332-7e53-7550-6e7b-21edb676d8cc.htm" />
+          <HelpTOCNode Title="GetX2 Method " Url="html/cf93c187-f596-4d6d-276b-542189245498.htm" />
+          <HelpTOCNode Title="UpdateProgress Method " Url="html/b62f8274-a660-8939-41b9-fd7d82bafb54.htm" />
+          <HelpTOCNode Title="UpdateStartButton Method " Url="html/4ff7dfc9-7606-019b-234d-2f541ef1d082.htm" />
+          <HelpTOCNode Title="WriteToLog Method " Url="html/ca75abf0-cfcd-1b6b-5b86-f7c770d531e9.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="HeritabilityCalculator Events" Url="html/dc654ef9-f4d4-d57a-06f7-6a547a4cc8d6.htm" />
+        <HelpTOCNode Id="fcf1677d-5c7f-421a-a7f9-faf0c48255fc" Title="HeritabilityCalculator Fields" Url="html/76f1e55b-9479-2d44-d1ae-73749cb26073.htm">
+          <HelpTOCNode Title="depths Field" Url="html/54751192-0a1b-3d70-cc96-5c89972ceec9.htm" />
+          <HelpTOCNode Title="fileDialog Field" Url="html/f3877a1b-6cdd-bc01-e08d-9fa59bc5ab72.htm" />
+          <HelpTOCNode Title="MainBranch Field" Url="html/44a1c3a4-7667-9417-72bf-423ec0a8e12d.htm" />
+          <HelpTOCNode Title="MainTree Field" Url="html/5e3f54e3-7020-ccf8-1703-f9c292e8795b.htm" />
+          <HelpTOCNode Title="numOfPartitions Field" Url="html/564c06a2-d162-4cb8-2453-477e6ee2226d.htm" />
+          <HelpTOCNode Title="numOftrees Field" Url="html/ed22583d-81ed-f2f0-3dfa-e3aff5104137.htm" />
+          <HelpTOCNode Title="t0Itr Field" Url="html/a2b7796f-c58c-07d2-8110-db97c0a99432.htm" />
+          <HelpTOCNode Title="tree Field" Url="html/16d2d3b2-e064-3a4e-5234-2eb8b1719a4c.htm" />
+          <HelpTOCNode Title="TreeValid Field" Url="html/78f18591-3b59-31cc-6e2e-1e928c97ca95.htm" />
+          <HelpTOCNode Title="UserInputData Field" Url="html/e8ffbd83-eee7-fecf-df0a-793ffe3b266c.htm" />
+          <HelpTOCNode Title="UserInputValid Field" Url="html/f3d64c50-caee-b2ee-a47a-84c467fe2a5b.htm" />
+          <HelpTOCNode Title="VM Field" Url="html/9472ba1e-d656-f047-d335-985e8ca26681.htm" />
+          <HelpTOCNode Title="VT Field" Url="html/b34459f9-09dd-3a5c-7b80-0e04be1a5d6c.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Title="HeritabilityCalculator.MessageType Enumeration" Url="html/3d598d3c-64b0-8a4c-a90a-d8a95958a5c1.htm" />
+      <HelpTOCNode Id="26f97d8b-c1df-4f5d-8d70-23d1f6eddc70" Title="Leaf Class" Url="html/6d4afd65-8c70-be61-f315-957b0af51e0c.htm">
+        <HelpTOCNode Title="Leaf Constructor " Url="html/d4d31bbd-541d-44c6-576a-955173f3ff00.htm" />
+        <HelpTOCNode Id="b8f41192-c33c-4711-b0f8-1d3d53be0f2c" Title="Leaf Properties" Url="html/36da7507-3406-009f-eab7-c11c2fa74b0b.htm">
+          <HelpTOCNode Title="Name Property " Url="html/e6307051-3076-122f-4dc4-179a24d39b9d.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Leaf Methods" Url="html/d5bb3b81-f3e3-0096-f5fb-ced4591a8452.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5301dabe-d850-4ae5-863a-9223fbdbeb8c" Title="ModelVariance Class" Url="html/53e207ab-eeca-4199-8b1c-cba81b220a8e.htm">
+        <HelpTOCNode Title="ModelVariance Constructor " Url="html/3cf83556-c193-201d-a9ac-4fa76169e747.htm" />
+        <HelpTOCNode Id="bf2ee601-5560-4700-a4a0-bfb7788529a3" Title="ModelVariance Methods" Url="html/00cbb7d4-4d63-a034-4607-6786604b6c5c.htm">
+          <HelpTOCNode Title="Calculate Method " Url="html/5cd7b252-0871-bb1d-ebaf-2b4efcb6ff2f.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="ModelVariance Events" Url="html/d5466819-84a2-7184-9ae1-b5000fcb5ff0.htm" />
+        <HelpTOCNode Id="d8309c64-c8a3-4c7e-a10a-16e91f6ebc36" Title="ModelVariance Fields" Url="html/2826f0c6-98db-3cf1-cb5d-ae6a52b00e04.htm">
+          <HelpTOCNode Title="deltaT Field" Url="html/2acea411-3b8a-a14f-94bb-38b430d0ed2c.htm" />
+          <HelpTOCNode Title="Results Field" Url="html/fc0a3bd0-261b-92d9-689e-17f9d572685e.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="6b3341a5-7e1f-4ba3-b0ed-2ea7e333320f" Title="ModelVarianceContainer Class" Url="html/6c98a79e-449e-6e3f-3944-6b511fd5919a.htm">
+        <HelpTOCNode Title="ModelVarianceContainer Constructor " Url="html/55fb09e1-07e4-2d76-bd6d-a97f7a16ba1b.htm" />
+        <HelpTOCNode Id="de1ae637-ceee-4e3b-a5a5-9d1e879598e0" Title="ModelVarianceContainer Properties" Url="html/5e65bbbe-f4a7-49da-0cd9-b025addace48.htm">
+          <HelpTOCNode Title="Data Property " Url="html/9c4742f0-8281-f621-d7a6-fe34eb3e2a1e.htm" />
+          <HelpTOCNode Title="GeneratedTree Property " Url="html/3b5906ab-70d1-ce55-9053-87c7fd5d1dcc.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="ModelVarianceContainer Methods" Url="html/e62098ae-4f3a-c6e9-ef5b-980ed15a6723.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="874169dd-9a09-4bb7-baeb-664184865a99" Title="ModelVarianceData Class" Url="html/cdb3ec93-1cc8-5fa9-f67b-ab4f71f2e992.htm">
+        <HelpTOCNode Title="ModelVarianceData Constructor " Url="html/16e5300a-62c9-96e6-d517-145248a2cf58.htm" />
+        <HelpTOCNode Id="eede7ab3-6f5a-4259-a030-f30424269280" Title="ModelVarianceData Properties" Url="html/d21234bf-2d62-14f5-c51c-fa126cee0dfe.htm">
+          <HelpTOCNode Title="ObservedTraits Property " Url="html/f617d48e-c001-f2fc-3346-275265b3dab9.htm" />
+          <HelpTOCNode Title="T0 Property " Url="html/5e541361-0dbf-d33c-8b5c-ec6c5b831b2b.htm" />
+          <HelpTOCNode Title="Variance Property " Url="html/83e41c35-e70c-7492-54b9-55260e92298e.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="ModelVarianceData Methods" Url="html/141045b2-eb72-0f3a-5886-0a63669dfa32.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="fc091735-d16a-41a5-93ef-a61a7ca9f5ac" Title="TotalVariance Class" Url="html/b3350d14-9d68-bb66-b8fe-86965d648c9f.htm">
+        <HelpTOCNode Title="TotalVariance Constructor " Url="html/b33ef2c1-281d-0841-cac7-02f5cdb16ff2.htm" />
+        <HelpTOCNode Id="1d7998b7-f60a-474a-952d-f390cf2eadba" Title="TotalVariance Properties" Url="html/5e2fcfa7-0ee6-8229-e800-ec54b381179b.htm">
+          <HelpTOCNode Title="VT_Final_Result Property " Url="html/8548e2d2-1a6b-0b7a-9270-33d195b64bc9.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="b0c0f0c6-9366-4e41-9566-83433a56ea4c" Title="TotalVariance Methods" Url="html/0cfc8b86-992c-189b-14ef-6439d86af4cd.htm">
+          <HelpTOCNode Title="Calculate Method " Url="html/51ef9c10-e573-e5cb-6292-f3ae5204d71d.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="TotalVariance Events" Url="html/088de3c9-1666-5142-cb39-ed1437aecafb.htm" />
+        <HelpTOCNode Title="TotalVariance Fields" Url="html/844a88e6-15b9-f094-7048-1804595c7f92.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="2c6a1457-4715-44b1-bd21-4fdeb26c6f5d" Title="TraitValue Class" Url="html/46812219-bc9a-4cbe-74ec-1c315d9e5881.htm">
+        <HelpTOCNode Title="TraitValue Constructor " Url="html/08f771b8-a9db-afa4-4177-e8ed4a720737.htm" />
+        <HelpTOCNode Title="TraitValue Methods" Url="html/c8c6a713-0359-d1a4-0ae7-48df060e9ed6.htm" />
+        <HelpTOCNode Id="97963969-4b9e-43af-8a98-5ed257bdb7d2" Title="TraitValue Fields" Url="html/e2260f70-361c-f8ad-a34a-2bd2cfcd1848.htm">
+          <HelpTOCNode Title="Name Field" Url="html/493b75e3-4dd1-6c9a-c5e5-4f38bf64b79e.htm" />
+          <HelpTOCNode Title="value Field" Url="html/b41f6574-1550-8227-fbfb-40d24b08a5cd.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="c0528d6e-cf23-443f-9075-72fb108acf7a" Title="Tree Class" Url="html/22de1c3f-993f-7b8c-c9bb-9d3eb7f36d94.htm">
+        <HelpTOCNode Title="Tree Constructor " Url="html/50f08dd4-3a04-58d5-048b-2424f16e2bc0.htm" />
+        <HelpTOCNode Id="8f9831dc-944c-443b-bb3b-d32226e86f78" Title="Tree Properties" Url="html/0c4a56d3-c6d9-4f86-ca95-21d4ca83ddc7.htm">
+          <HelpTOCNode Title="MaxDepth Property " Url="html/ce6a7588-5d68-99e7-dd30-e5ceafe2bc37.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="7060b7f2-656e-456c-a4f1-8bb4504c227a" Title="Tree Methods" Url="html/75e9a18f-7c66-11aa-c71b-74aa5f8c53b9.htm">
+          <HelpTOCNode Title="Parse Method " Url="html/5d5e7e01-c4a2-7931-63a4-61e0dd8efbe5.htm" />
+          <HelpTOCNode Title="ValidateTree Method " Url="html/41bdd018-6279-a578-e141-7d90a9611706.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="1e9073d9-8c89-42c0-9819-7d5edf9e7065" Title="Tree Fields" Url="html/94e5e326-9c84-26d3-b8a1-1094b8b616dd.htm">
+          <HelpTOCNode Title="input Field" Url="html/a1ba7a1a-ba0d-5204-37d4-6e1c202dab59.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="215dc025-f8e6-4a4b-9c46-7431ca15a041" Title="TreeDrawData Class" Url="html/392b3dda-0ce3-6844-85ca-36f2019eb8e9.htm">
+        <HelpTOCNode Title="TreeDrawData Constructor " Url="html/3a2770b9-f89c-6416-d1c0-54bfcdc7080e.htm" />
+        <HelpTOCNode Id="98cd7ebd-d0f2-4b58-8502-2fc34f878b26" Title="TreeDrawData Properties" Url="html/17dc244a-bc57-e8c9-0ee4-e55297ff1817.htm">
+          <HelpTOCNode Title="BestItr Property " Url="html/5b942520-f4a4-cfb3-0e2d-32312c565290.htm" />
+          <HelpTOCNode Title="BestItrRes Property " Url="html/ac9c15b7-fc63-39e5-d58b-a83fb73f77e7.htm" />
+          <HelpTOCNode Title="DeltaT Property " Url="html/8eb1f7ca-1d65-2dc1-9c77-36ee420c4e19.htm" />
+          <HelpTOCNode Title="Liklihood Property " Url="html/f4f24245-1ead-0f79-1afa-cceb84006ae9.htm" />
+          <HelpTOCNode Title="ModelVariance Property " Url="html/b50c9d2d-a725-6841-fd9d-302ab1c4caa4.htm" />
+          <HelpTOCNode Title="NumOfPartitions Property " Url="html/17959787-f2d7-22bf-0ae1-5d8770fdeaa8.htm" />
+          <HelpTOCNode Title="NumOfTrees Property " Url="html/727daba3-7c63-6ada-417e-d7b50f6ba0c3.htm" />
+          <HelpTOCNode Title="Observed Property " Url="html/96d9f506-52c1-ce8e-bfcc-9d84a41a2e3f.htm" />
+          <HelpTOCNode Title="Partition Property " Url="html/5120f81e-47e6-0f2d-0aca-baf8747a5405.htm" />
+          <HelpTOCNode Title="Root Property " Url="html/29300c3d-5f0c-57ef-b58a-ab64546686a7.htm" />
+          <HelpTOCNode Title="Title Property " Url="html/034f3f86-db98-dea9-3394-a79eb99f90d6.htm" />
+          <HelpTOCNode Title="TotalVariance Property " Url="html/6cba41ec-2d3d-4a40-859a-9a61e4111467.htm" />
+          <HelpTOCNode Title="X2 Property " Url="html/bacc5534-b0a7-be77-cbfd-feffd2604c6a.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="TreeDrawData Methods" Url="html/2705fe4f-dc6f-9ba7-8b68-521bec854360.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="47738d4b-c5f5-4411-9fca-cfb16453b408" Title="UserInput Class" Url="html/b4144e8d-9fd1-767a-d78a-6e7b2cdd16ea.htm">
+        <HelpTOCNode Title="UserInput Constructor " Url="html/16b73c1d-792d-61a7-7ba2-3d210f3412d9.htm" />
+        <HelpTOCNode Id="5967097e-8cd4-4813-b3e5-019b463b7a34" Title="UserInput Properties" Url="html/c37f3b03-f1bd-4084-3c05-eb88e668c7cc.htm">
+          <HelpTOCNode Title="N Property " Url="html/26076777-91e4-b031-73c6-d457257cc1ed.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="1aa728b6-96ba-4eae-aac1-4c3d5a186353" Title="UserInput Methods" Url="html/2b55808f-a6a7-5c6e-f214-613beb91000c.htm">
+          <HelpTOCNode Title="Validate Method " Url="html/9c65b318-903e-99d4-d07f-743ddb570eba.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="b4f7bc59-af9b-4267-899c-13ff70fa87d1" Title="UserInput Fields" Url="html/e88a1c3e-be52-a904-947a-68bae96b4d51.htm">
+          <HelpTOCNode Title="DistanceMatrix Field" Url="html/a605c5b3-390e-1fc7-0abd-ffa76bc52678.htm" />
+          <HelpTOCNode Title="EmissionMatrix Field" Url="html/774c8f52-41c8-80f3-6823-9fefb7e7cc18.htm" />
+          <HelpTOCNode Title="ObservedTraits Field" Url="html/2d383029-8314-b5b6-71e7-921834c43c05.htm" />
+          <HelpTOCNode Title="Traits Field" Url="html/2cfb204c-21f8-a901-00a2-3aad3b0ec0a9.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="8f5023f1-750d-49b7-a474-2d0a4661cbc2" Title="Variance Class" Url="html/8942e44d-a138-b3e7-32d5-dc0235a076ec.htm">
+        <HelpTOCNode Title="Variance Constructor " Url="html/1fcd33f1-52e9-69a4-401e-348142b9c74b.htm" />
+        <HelpTOCNode Id="4e2f0c08-381e-4f26-aea2-04b1182ac5e6" Title="Variance Methods" Url="html/501ce072-29f3-2191-c41d-a7ba3e6d851b.htm">
+          <HelpTOCNode Title="Calculate Method " Url="html/e50a531d-5f74-6a61-db63-b23621a48ddc.htm" />
+          <HelpTOCNode Title="GetFerchetDistance Method " Url="html/56fb98f1-d5ba-3f9c-8901-83afad821691.htm" />
+          <HelpTOCNode Title="GetNumOfInstances Method " Url="html/176c27eb-d53c-0338-4966-7caf59353ae3.htm" />
+          <HelpTOCNode Title="GetPC Method " Url="html/8759704f-afd9-9a3d-5d17-302d691cab8a.htm" />
+          <HelpTOCNode Title="GetVariance Method " Url="html/e97a666c-f0a3-1510-0d2d-42c547936efa.htm" />
+          <HelpTOCNode Title="RaiseFinished Method " Url="html/e004b0fc-02a0-b2ee-ac0f-2e1d145edb44.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="eedd806d-d086-4da1-9b00-d0662b1b3131" Title="Variance Events" Url="html/3d226c01-91de-c968-7533-5046087799cc.htm">
+          <HelpTOCNode Title="Finished Event" Url="html/bbc88903-fa2f-e5ea-f999-c98cf8ca21e8.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="0b1e4a36-fbae-4f7e-a08b-c06f7b0e6898" Title="Variance Fields" Url="html/b20abcf1-8ee9-11ea-6f94-e187d027290f.htm">
+          <HelpTOCNode Title="userData Field" Url="html/53e15869-9653-a0d6-0fcc-2376abb79231.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+</HelpTOC>

@@ -9,8 +9,19 @@ namespace HeritabilityCalculator
     /// </summary>
     public class FinishedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Message to be displayed in log
+        /// </summary>
         public string Message { get; private set; }
+        /// <summary>
+        /// Flag to update progress bar
+        /// </summary>
         public bool UpdateProgress { get; private set; }
+        /// <summary>
+        /// Create instance of finished event args
+        /// </summary>
+        /// <param name="msg">Message to be displayed in log</param>
+        /// <param name="updateProgress">Flag to update progress bar</param>
         public FinishedEventArgs(string msg, bool updateProgress)
         {
             Message = msg;
@@ -25,9 +36,18 @@ namespace HeritabilityCalculator
     {
         #region Fields
 
+        /// <summary>
+        /// User input data
+        /// </summary>
         public UserInput userData;
+        /// <summary>
+        /// Finished calculation event handler
+        /// </summary>
         public event EventHandler<FinishedEventArgs> Finished;
-        int itr = 0;
+        /// <summary>
+        /// Iterations counter
+        /// </summary>
+        private int itr = 0;
 
         #endregion Fields
 
@@ -63,8 +83,7 @@ namespace HeritabilityCalculator
         /// <param name="e">Data for finished calculation event</param>
         protected virtual void RaiseFinished(object sender, FinishedEventArgs e)
         {
-            if (Finished != null)
-                Finished(sender, e);
+            Finished?.Invoke(sender, e);
         }
 
         /// <summary>

@@ -10,18 +10,57 @@ namespace HeritabilityCalculator
     /// </summary>
     public class TreeDrawData
     {
+        /// <summary>
+        /// File title
+        /// </summary>
         public string Title { get; set; }
+        /// <summary>
+        /// Root node
+        /// </summary>
         public Branch Root { get; set; }
-        public List<TraitValue> observed { get; set; }
+        /// <summary>
+        /// Observed phenotypic trait values
+        /// </summary>
+        public List<TraitValue> Observed { get; set; }
+        /// <summary>
+        /// Model variance min, mid and max
+        /// </summary>
         public double[] ModelVariance { get; set; }
+        /// <summary>
+        /// Total variance
+        /// </summary>
         public double TotalVariance { get; set; }
+        /// <summary>
+        /// Maximum liklihood estimation
+        /// </summary>
         public double Liklihood { get; set; }
+        /// <summary>
+        /// Partition size
+        /// </summary>
         public double Partition { get; set; }
+        /// <summary>
+        /// Number of partitions
+        /// </summary>
         public int NumOfPartitions { get; set; }
+        /// <summary>
+        /// X2 for every iteration
+        /// </summary>
         public double[] X2 { get; set; }
+        /// <summary>
+        /// Best iteration index
+        /// </summary>
         public double BestItr { get; set; }
+        /// <summary>
+        /// Results for best iteration index
+        /// </summary>
         public int[] BestItrRes { get; set; }
+        /// <summary>
+        /// Deltat
+        /// </summary>
         public double DeltaT { get; set; }
+        /// <summary>
+        /// Number of simulated trees
+        /// </summary>
         public int NumOfTrees { set; get; }
     }
 
@@ -30,13 +69,30 @@ namespace HeritabilityCalculator
     /// </summary>
     class TreeDraw
     {
+        /// <summary>
+        /// Tree draw data
+        /// </summary>
         private TreeDrawData data;
-        private string localPath = string.Empty;
-        private double heritabilityMin;
-        private double heritability;
-        private double heritabilityMax;
+        /// <summary>
+        /// Local exe path
+        /// </summary>
+        private readonly string localPath = string.Empty;
+        /// <summary>
+        /// Minimum heritability value
+        /// </summary>
+        private readonly double heritabilityMin;
+        /// <summary>
+        /// Midium heritability value
+        /// </summary>
+        private readonly double heritability;
+        /// <summary>
+        /// Maximum heritability value
+        /// </summary>
+        private readonly double heritabilityMax;
+        /// <summary>
+        /// Tolerance for X2 statistics
+        /// </summary>
         private const double tolerance = 0.7;
-        private int itr = 0;
 
         /// <summary>
         /// Create instance of tree draw
@@ -106,14 +162,14 @@ namespace HeritabilityCalculator
             AddTreeData(data.Root, sb);
             sb.AppendLine("];");
             sb.AppendLine("var observedData = [");
-            for (int i = 0; i < data.observed.Count; i++)
+            for (int i = 0; i < data.Observed.Count; i++)
             {
                 sb.AppendLine("{");
-                sb.AppendLine("'name': '" + data.observed[i].value + "'");
-                if (i < data.observed.Count-1)
+                sb.AppendLine("'name': '" + data.Observed[i].value + "'");
+                if (i < data.Observed.Count-1)
                     sb.AppendLine(",'children': [");
             }
-            for (int i = 0; i < data.observed.Count-1; i++)
+            for (int i = 0; i < data.Observed.Count-1; i++)
             {
                 sb.AppendLine("}]");
             }
@@ -306,7 +362,6 @@ namespace HeritabilityCalculator
                 sb.AppendLine("]");
             }
             sb.Append("}");
-            itr++;
         }
     }
 }

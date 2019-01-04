@@ -11,6 +11,9 @@ namespace HeritabilityCalculator
     /// </summary>
     public class TotalVariance : Variance
     {
+        /// <summary>
+        /// Total variance result
+        /// </summary>
         public double VT_Final_Result { get; private set; }
 
         /// <summary>

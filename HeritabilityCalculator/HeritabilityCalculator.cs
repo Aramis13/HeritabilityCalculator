@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Bio.IO.Newick;
@@ -91,17 +92,34 @@ namespace HeritabilityCalculator
         /// </summary>
         public enum MessageType
         {
+            /// <summary>
+            /// Info message type
+            /// </summary>
             Info,
+            /// <summary>
+            /// Error message type
+            /// </summary>
             Error,
+            /// <summary>
+            /// Success message type
+            /// </summary>
             Success,
+            /// <summary>
+            /// Important message type
+            /// </summary>
             Important
         }
 
+        /// <summary>
+        /// Open help file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode.ToString() == "F1")
             {
-                System.Diagnostics.Process.Start(@"C:\\Users\\Idan\\Desktop\\Test.pdf");
+                System.Diagnostics.Process.Start(Path.Combine(Environment.CurrentDirectory, "Help" ,"Help.pdf"));
             }
         }
 
@@ -248,9 +266,15 @@ namespace HeritabilityCalculator
         /// <param name="e"></param>
         private async void StartButton_Click(object sender, EventArgs e)
         {
-            TreeBrowse.Enabled = false;
-            InputBrowse.Enabled = false;
-            StartButton.Enabled = false;
+            ProgressLabel.Text = "Progress: 0%";
+            ProgressLabel.Visible = true;
+            BrowseTreeLabel.Visible = false;
+            TreePathText.Visible = false;
+            UserInputText.Visible = false;
+            TreeBrowse.Visible = false;
+            InputBrowse.Visible = false;
+            StartButton.Visible = false;
+            BrowseInputlabel.Visible = false;
             Log.Clear();
             WriteToLog("Starting Calculation...", MessageType.Important);
 
@@ -273,12 +297,19 @@ namespace HeritabilityCalculator
             await Task.WhenAll(tasks);
 
             WriteToLog("Processing Results...", MessageType.Important);
-            double partition = GetPartitionsDelta(VM.Resaults);
-            int[,] baskets = GetBaskets(VM.Resaults, partition);
+            double partition = GetPartitionsDelta(VM.Results);
+            int[,] baskets = GetBaskets(VM.Results, partition);
 
-            TreeBrowse.Enabled = true;
-            InputBrowse.Enabled = true;
-            StartButton.Enabled = true;
+            TreePathText.Visible = true;
+            UserInputText.Visible = true;
+            BrowseTreeLabel.Visible = true;
+            TreeBrowse.Visible = true;
+            InputBrowse.Visible = true;
+            BrowseInputlabel.Visible = true;
+            CalculateProgressBar.Visible = false;
+            ProgressLabel.Visible = false;
+
+            StartButton.Visible = true;
 
             int vtPartition = GetPartition(partition, VT.VT_Final_Result);
             int bestItr = GetMaxT0(baskets, vtPartition);
@@ -289,16 +320,16 @@ namespace HeritabilityCalculator
                 bestItrArr[i] = baskets[bestItr, i];
             }
             double[] liklihoods = GetLiklihoods(baskets, vtPartition);
-            double[] vmResualts = GetVM(VM.Resaults, bestItr);
+            double[] vmResualts = GetVM(VM.Results, bestItr);
             double liklihood = bestItrArr[vtPartition] / (double)numOftrees;
             double[] X2 = GetX2(liklihoods, bestItr);
-            Branch bestTree = VM.Resaults.ElementAt(0).GeneratedTree;
-            List<TraitValue> traitValues = VM.Resaults.ElementAt(0).Data.ElementAt(bestItr).ObservedTraits;
+            Branch bestTree = VM.Results.ElementAt(0).GeneratedTree;
+            List<TraitValue> traitValues = VM.Results.ElementAt(0).Data.ElementAt(bestItr).ObservedTraits;
 
             TreeDrawData data = new TreeDrawData()
             {
                 Liklihood = liklihood,
-                observed = traitValues,
+                Observed = traitValues,
                 Root = bestTree,
                 Title = "Eye Color",
                 ModelVariance = vmResualts,
@@ -313,6 +344,12 @@ namespace HeritabilityCalculator
             };
             TreeDraw treeDraw = new TreeDraw(data);
             treeDraw.Create();
+            Task task = Task.Factory.StartNew((Action)(() =>
+            {
+                WriteToLog("Algorithem finished successfully" + Environment.NewLine + "Opening results view...", MessageType.Success);
+                Thread.Sleep(4000);
+            }));
+            await task;
             treeDraw.Open();
         }
 
@@ -518,6 +555,17 @@ namespace HeritabilityCalculator
             else
             {
                 CalculateProgressBar.Value++;
+            }
+            if (ProgressLabel.InvokeRequired)
+            {
+                ProgressLabel.BeginInvoke((Action)(() =>
+                {
+                    ProgressLabel.Text = "Progress: " + (double)CalculateProgressBar.Value / numOftrees + "%";
+                }));
+            }
+            else
+            {
+                ProgressLabel.Text = "Progress: " + (double)CalculateProgressBar.Value / numOftrees + "%";
             }
         }
     }

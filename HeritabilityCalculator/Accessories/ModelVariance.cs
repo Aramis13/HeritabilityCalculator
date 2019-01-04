@@ -12,7 +12,13 @@ namespace HeritabilityCalculator
     /// </summary>
     public class ModelVarianceContainer
     {
+        /// <summary>
+        /// Genrated tree
+        /// </summary>
         public Branch GeneratedTree { get; set; }
+        /// <summary>
+        /// Generated tree data
+        /// </summary>
         public List<ModelVarianceData> Data { get; set; }
     }
 
@@ -21,8 +27,17 @@ namespace HeritabilityCalculator
     /// </summary>
     public class ModelVarianceData
     {
+        /// <summary>
+        /// Elongation for current iteration
+        /// </summary>
         public double T0 { get; set; }
+        /// <summary>
+        /// Variance for current iteration
+        /// </summary>
         public double Variance { get; set; }
+        /// <summary>
+        /// Observed traits for current iteration
+        /// </summary>
         public List<TraitValue> ObservedTraits { get; set; } = new List<TraitValue>();
     }
 
@@ -31,9 +46,21 @@ namespace HeritabilityCalculator
     /// </summary>
     public class ModelVariance : Variance
     {
+        /// <summary>
+        /// Newick parsed tree
+        /// </summary>
         private Bio.Phylogenetics.Tree tree;
-        public ConcurrentBag<ModelVarianceContainer> Resaults = new ConcurrentBag<ModelVarianceContainer>();
+        /// <summary>
+        /// Results array for all trees and iterations
+        /// </summary>
+        public ConcurrentBag<ModelVarianceContainer> Results = new ConcurrentBag<ModelVarianceContainer>();
+        /// <summary>
+        /// Deltat value
+        /// </summary>
         public double deltaT = 1;
+        /// <summary>
+        /// NUmber of t0 iterations
+        /// </summary>
         private readonly int t0Itr;
 
         /// <summary>
@@ -89,7 +116,7 @@ namespace HeritabilityCalculator
                
             }
             container.Data = data;
-            Resaults.Add(container);
+            Results.Add(container);
             RaiseFinished(form, new FinishedEventArgs("Finished Itteration ", true));
         }
 

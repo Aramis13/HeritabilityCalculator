@@ -12,10 +12,25 @@ namespace HeritabilityCalculator
     /// </summary>
     public class Tree
     {
+        /// <summary>
+        /// Algorithem current position
+        /// </summary>
         private int currentPosition;
+        /// <summary>
+        /// Newick format string input
+        /// </summary>
         public string input;
+        /// <summary>
+        /// All branches depths
+        /// </summary>
         private List<double> depths = new List<double>();
+        /// <summary>
+        /// Sum of current branch
+        /// </summary>
         private double sum = 0;
+        /// <summary>
+        /// Max depth of tree
+        /// </summary>
         public double MaxDepth
         {
             get

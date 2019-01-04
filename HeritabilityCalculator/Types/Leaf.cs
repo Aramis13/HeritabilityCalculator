@@ -11,6 +11,9 @@ namespace HeritabilityCalculator
     /// </summary>
     public class Leaf : Branch
     {
+        /// <summary>
+        /// Node name
+        /// </summary>
         public string Name { get; set; }
     }
 }
