@@ -149,7 +149,7 @@ namespace HeritabilityCalculator
             sb.AppendLine("<div id='resualts' class='col-sm-12 res'>");
             sb.AppendLine("<h4 class='col-sm-4'>Total Variance: " + String.Format("{0:0.00}", data.TotalVariance) + "</h4>");
             sb.AppendLine("<h4 class='col-sm-4'>Model Variance: " + String.Format("{0:0.00}", data.ModelVariance[1]) + "</h4>");
-            sb.AppendLine("<h4 class='col-sm-4'>Liklihood: " + data.Liklihood + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Liklihood: " + data.Liklihood * 100 + "%</h4>");
             sb.AppendLine("</div>");
             sb.AppendLine("<div id='heritability' class='col-sm-12 res'>");
             sb.AppendLine("<h4 class='col-sm-4'>Heritability (Min): " + String.Format("{0:0.00}", heritabilityMax) + "</h4>");

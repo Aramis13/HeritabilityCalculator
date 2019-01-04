@@ -155,7 +155,7 @@
             // 
             // CalculateProgressBar
             // 
-            this.CalculateProgressBar.Location = new System.Drawing.Point(12, 233);
+            this.CalculateProgressBar.Location = new System.Drawing.Point(10, 233);
             this.CalculateProgressBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CalculateProgressBar.Name = "CalculateProgressBar";
             this.CalculateProgressBar.Size = new System.Drawing.Size(568, 24);
@@ -176,6 +176,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(586, 551);
             this.Controls.Add(this.ProgressLabel);
             this.Controls.Add(this.CalculateProgressBar);
@@ -189,6 +190,7 @@
             this.Controls.Add(this.BrowseTreeLabel);
             this.Controls.Add(this.TreePathText);
             this.Controls.Add(this.TreeBrowse);
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "HeritabilityCalculator";

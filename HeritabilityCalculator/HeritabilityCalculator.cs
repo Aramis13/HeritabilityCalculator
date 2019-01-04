@@ -245,7 +245,7 @@ namespace HeritabilityCalculator
                     type = MessageType.Success;
                     UserInputText.Text = path;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     msg = "Failed to parse input" + Environment.NewLine;
                     msg += "Validate that your input is in the correct format.";
@@ -533,7 +533,6 @@ namespace HeritabilityCalculator
                     case MessageType.Success: Log.SelectionColor = Color.Green; break;
                     case MessageType.Important: Log.SelectionColor = Color.Blue; break;
                 }
-
                 Log.AppendText(msg + Environment.NewLine);
                 Log.SelectionStart = Log.Text.Length;
                 Log.ScrollToCaret();
@@ -560,12 +559,12 @@ namespace HeritabilityCalculator
             {
                 ProgressLabel.BeginInvoke((Action)(() =>
                 {
-                    ProgressLabel.Text = "Progress: " + (double)CalculateProgressBar.Value / numOftrees + "%";
+                    ProgressLabel.Text = "Progress: " + ((double)CalculateProgressBar.Value / numOftrees) * 100 + "%";
                 }));
             }
             else
             {
-                ProgressLabel.Text = "Progress: " + (double)CalculateProgressBar.Value / numOftrees + "%";
+                ProgressLabel.Text = "Progress: " + ((double)CalculateProgressBar.Value / numOftrees) * 100 + "%";
             }
         }
     }
