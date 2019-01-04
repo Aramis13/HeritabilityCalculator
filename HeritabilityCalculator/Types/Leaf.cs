@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace HeritabilityCalculator
 {
+    /// <summary>
+    /// Containcs leaf node data
+    /// </summary>
     public class Leaf : Branch
     {
         public string Name { get; set; }

@@ -1,17 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace HeritabilityCalculator
 
-namespace HeritabilityCalculator
 {
-     public class UserInput
+    /// <summary>
+    /// Contains all User data input
+    /// </summary>
+    public class UserInput
     {
+        /// <summary>
+        /// Contains ferchet distances
+        /// </summary>
         public double[,] DistanceMatrix;
+        /// <summary>
+        /// Contains transition values
+        /// </summary>
         public double[,] EmissionMatrix;
+        /// <summary>
+        /// Contains Observed traits
+        /// </summary>
         public TraitValue[] ObservedTraits;
+        /// <summary>
+        /// Traits in intrist
+        /// </summary>
         public string[] Traits;
+        /// <summary>
+        /// NUmber of observed traits
+        /// </summary>
         public int N
         {
             get
@@ -23,6 +36,10 @@ namespace HeritabilityCalculator
             }
         }
 
+        /// <summary>
+        /// Validates the user input
+        /// </summary>
+        /// <returns></returns>
         public bool Validate()
         {
             return DistanceMatrix != null && EmissionMatrix != null && ObservedTraits != null
@@ -30,9 +47,18 @@ namespace HeritabilityCalculator
         }
     }
 
+    /// <summary>
+    /// Contains trait value data
+    /// </summary>
     public class TraitValue
     {
+        /// <summary>
+        /// Trait name
+        /// </summary>
         public string Name = string.Empty;
+        /// <summary>
+        /// Trait value
+        /// </summary>
         public string value;
     }
 }

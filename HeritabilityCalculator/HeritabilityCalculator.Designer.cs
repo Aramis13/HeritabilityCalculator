@@ -38,6 +38,8 @@
             this.Log = new System.Windows.Forms.RichTextBox();
             this.DescriptionLabel = new System.Windows.Forms.Label();
             this.StartButton = new System.Windows.Forms.Button();
+            this.CalculateProgressBar = new System.Windows.Forms.ProgressBar();
+            this.ApplicationHelp = new System.Windows.Forms.HelpProvider();
             this.SuspendLayout();
             // 
             // TreeBrowse
@@ -102,7 +104,7 @@
             // 
             this.MainHeader.AutoSize = true;
             this.MainHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MainHeader.Location = new System.Drawing.Point(165, 28);
+            this.MainHeader.Location = new System.Drawing.Point(162, 22);
             this.MainHeader.Name = "MainHeader";
             this.MainHeader.Size = new System.Drawing.Size(498, 58);
             this.MainHeader.TabIndex = 6;
@@ -120,11 +122,14 @@
             // DescriptionLabel
             // 
             this.DescriptionLabel.AutoSize = true;
-            this.DescriptionLabel.Location = new System.Drawing.Point(100, 118);
+            this.DescriptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DescriptionLabel.Location = new System.Drawing.Point(49, 111);
             this.DescriptionLabel.Name = "DescriptionLabel";
-            this.DescriptionLabel.Size = new System.Drawing.Size(227, 17);
+            this.DescriptionLabel.Size = new System.Drawing.Size(708, 48);
             this.DescriptionLabel.TabIndex = 8;
-            this.DescriptionLabel.Text = "Short description about the app.....";
+            this.DescriptionLabel.Text = "Welcome to Heritability Calculator, Please load all requierd data to begin calcul" +
+    "ation.\r\nFor help press F1.";
+            this.DescriptionLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // StartButton
             // 
@@ -138,11 +143,20 @@
             this.StartButton.UseVisualStyleBackColor = true;
             this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
+            // CalculateProgressBar
+            // 
+            this.CalculateProgressBar.Location = new System.Drawing.Point(12, 417);
+            this.CalculateProgressBar.Name = "CalculateProgressBar";
+            this.CalculateProgressBar.Size = new System.Drawing.Size(758, 35);
+            this.CalculateProgressBar.TabIndex = 10;
+            this.CalculateProgressBar.Visible = false;
+            // 
             // HeritabilityCalculator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(782, 753);
+            this.Controls.Add(this.CalculateProgressBar);
             this.Controls.Add(this.StartButton);
             this.Controls.Add(this.DescriptionLabel);
             this.Controls.Add(this.Log);
@@ -174,6 +188,8 @@
         private System.Windows.Forms.RichTextBox Log;
         private System.Windows.Forms.Label DescriptionLabel;
         private System.Windows.Forms.Button StartButton;
+        private System.Windows.Forms.ProgressBar CalculateProgressBar;
+        private System.Windows.Forms.HelpProvider ApplicationHelp;
     }
 }
 

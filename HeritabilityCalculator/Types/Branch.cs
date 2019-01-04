@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace HeritabilityCalculator
 {
+    /// <summary>
+    /// Contains tree node data
+    /// </summary>
     public class Branch
     {
         public double Length { get; set; }

@@ -16,7 +16,6 @@ namespace HeritabilityCalculator
         public string input;
         private List<double> depths = new List<double>();
         private double sum = 0;
-
         public double MaxDepth
         {
             get
@@ -25,12 +24,21 @@ namespace HeritabilityCalculator
             }
         }
 
+        /// <summary>
+        /// Creates instance of tree
+        /// </summary>
+        /// <param name="text">Newick format tree text</param>
         public Tree(string text)
         {
             input = new string(text.Where(c => !char.IsWhiteSpace(c)).ToArray());
             currentPosition = 0;
         }
 
+        /// <summary>
+        /// Validates that the inpu string is in valid newick format
+        /// </summary>
+        /// <param name="error">Error message</param>
+        /// <returns>If format is valid</returns>
         public bool ValidateTree(out string error)
         {
             bool success = true;
@@ -60,10 +68,19 @@ namespace HeritabilityCalculator
             return success;
         }
 
+        /// <summary>
+        /// Parse a single branch of tree
+        /// </summary>
+        /// <returns>A single branch of tree</returns>
         public Branch Parse()
         {
             return new Branch { SubBranches = ParseBranchSet() };
         }
+
+        /// <summary>
+        /// Parse a branch set of tree
+        /// </summary>
+        /// <returns>A branch set of tree</returns>
         private List<Branch> ParseBranchSet()
         {
             var ret = new List<Branch>();
@@ -89,21 +106,29 @@ namespace HeritabilityCalculator
             {
                 sum += tree.Length;
             }
-            //depth += tree.Length;
             return tree;
         }
+
+        /// <summary>
+        /// Parse sub tree
+        /// </summary>
+        /// <returns>Sub tree</returns>
         private Branch ParseSubTree()
         {
             if (char.IsLetter(PeekCharacter()))
             {
                 return new Leaf { Name = ParseIdentifier() };
             }
-
             currentPosition++; // '('
             var branches = ParseBranchSet();
             currentPosition++; // ')'
             return new Branch { SubBranches = branches };
         }
+
+        /// <summary>
+        /// Parse newick format symbols
+        /// </summary>
+        /// <returns>Newick format symbol</returns>
         private string ParseIdentifier()
         {
             var identifer = "";
@@ -115,6 +140,11 @@ namespace HeritabilityCalculator
             }
             return identifer;
         }
+
+        /// <summary>
+        /// Parse newick format number
+        /// </summary>
+        /// <returns>Newick format number</returns>
         private double ParseDouble()
         {
             var num = "";
@@ -126,6 +156,11 @@ namespace HeritabilityCalculator
             }
             return double.Parse(num, CultureInfo.InvariantCulture);
         }
+
+        /// <summary>
+        /// Check current position of char
+        /// </summary>
+        /// <returns>Current char</returns>
         private char PeekCharacter()
         {
             if (currentPosition >= input.Length - 1)

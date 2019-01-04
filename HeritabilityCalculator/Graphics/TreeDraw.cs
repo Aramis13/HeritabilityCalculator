@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace HeritabilityCalculator
 {
+    /// <summary>
+    /// Data required for final display
+    /// </summary>
     public class TreeDrawData
     {
         public string Title { get; set; }
@@ -24,6 +25,9 @@ namespace HeritabilityCalculator
         public int NumOfTrees { set; get; }
     }
 
+    /// <summary>
+    /// Contains final results
+    /// </summary>
     class TreeDraw
     {
         private TreeDrawData data;
@@ -34,6 +38,10 @@ namespace HeritabilityCalculator
         private const double tolerance = 0.7;
         private int itr = 0;
 
+        /// <summary>
+        /// Create instance of tree draw
+        /// </summary>
+        /// <param name="treeData">Data required for final display</param>
         public TreeDraw(TreeDrawData treeData)
         {
             localPath = Environment.CurrentDirectory;
@@ -43,6 +51,9 @@ namespace HeritabilityCalculator
             heritabilityMax = treeData.TotalVariance / treeData.ModelVariance[2];
         }
 
+        /// <summary>
+        /// Create dynamic html file to display final results
+        /// </summary>
         public void Create()
         {
             StringBuilder sb = new StringBuilder();
@@ -109,7 +120,6 @@ namespace HeritabilityCalculator
             sb.AppendLine("}];");
             string s = File.ReadAllText(localPath + "\\Graphics\\treeViewController.js");
             sb.AppendLine(s);
-
 
             sb.AppendLine("var options = {");
             sb.AppendLine("scales: {");
@@ -263,6 +273,9 @@ namespace HeritabilityCalculator
             File.WriteAllText(Path.Combine(localPath, "TreeResualts", data.Title.Replace(" ", "") + ".html"), sb.ToString());
         }
 
+        /// <summary>
+        /// Open the created file in a chrome browser
+        /// </summary>
         public void Open()
         {
             try
@@ -272,6 +285,11 @@ namespace HeritabilityCalculator
             catch { }
         }
 
+        /// <summary>
+        /// Add all tree nodes to js tree object
+        /// </summary>
+        /// <param name="node">Tree node</param>
+        /// <param name="sb">String for tree build</param>
         private void AddTreeData(Branch node, StringBuilder sb)
         {
             sb.AppendLine("{");
@@ -290,6 +308,5 @@ namespace HeritabilityCalculator
             sb.Append("}");
             itr++;
         }
-
     }
 }

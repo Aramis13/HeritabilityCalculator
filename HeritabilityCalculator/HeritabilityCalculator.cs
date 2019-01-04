@@ -1,83 +1,94 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Accord.Statistics.Models.Markov.Learning;
 using Bio.IO.Newick;
 using Newtonsoft.Json;
 
 namespace HeritabilityCalculator
 {
+    /// <summary>
+    /// Main form for the project
+    /// </summary>
     public partial class HeritabilityCalculator : Form
     {
-        #region Examples
-        // TraitValues = new Dictionary<string, object>();     // phenotypic trait values of Leaves (current observed)
-        // TraitValues.Add("A", "red");
-        // TraitValues.Add("B", "green");
-        // TraitValues.Add("C", "blue");
-        // TraitValues.Add("D", "red");
-        // TraitValues.Add("E", "red");
-        // TraitValues.Add("F", "red");
-        // TraitValues.Add("G", "green");
-        // TraitValues.Add("H", "green");
-
-        // /*
-
-        //   ** ORDER IN THIS EXAMPLE: RED -> GREEN -> BLUE
-
-        //         RED   GREEN   BLUE
-        //  RED    0     0.2     0.7
-        //  GREEN  0.2   0       0.5
-        //  BLUE   0.7   0.5     0
-
-        //  */
-
-        // order = new string[] { "red", "green", "blue" };        // order of matrix
-        // DistanceMatrix = new double[N, N] { {0,0.2,0.7}, {0.2,0,0.5}, {0.7,0.5,0} };    // D matrix
-        // TotalVariance VT = new TotalVariance(TraitValues, DistanceMatrix, order);   // calc VT
-
-        // Console.WriteLine("Total Variance is: " + VT.getVT());  // print VT
-
-        //// var tree = new Tree("(((A:0.1,(B:0.2,C:0.3):0.4):0.5,((D:0.6,E:0.7):0.8,(F:0.9,G:1):1.1):1.2):1.3)").Parse();
-        #endregion Examples
-
         #region Fields
 
+        /// <summary>
+        /// Main tree from user input
+        /// </summary>
         public Tree MainTree;
-        public string TraitName;
+        /// <summary>
+        /// Number of trees to be simulated
+        /// </summary>
         public const int numOftrees = 100;
+        /// <summary>
+        /// Number of t0 iterations
+        /// </summary>
         public const int t0Itr = 10;
+        /// <summary>
+        /// Number of variance partitions
+        /// </summary>
         public const int numOfPartitions = 10;
 
-
-        public string[] order;      // order of phenotypic values as presented in the distances matrix
+        /// <summary>
+        /// File dialog for user input
+        /// </summary>
         public OpenFileDialog fileDialog;
+        /// <summary>
+        /// Root for main tree
+        /// </summary>
         public Branch MainBranch;
+        /// <summary>
+        /// Newick parser tree
+        /// </summary>
         public Bio.Phylogenetics.Tree tree;
+        /// <summary>
+        /// If tree is a valid newick tree
+        /// </summary>
         public bool TreeValid = false;
+        /// <summary>
+        /// If user unput is valid
+        /// </summary>
         public bool UserInputValid = false;
+        /// <summary>
+        /// Contains user input data
+        /// </summary>
         public UserInput UserInputData;
+        /// <summary>
+        /// Contains total variance data
+        /// </summary>
         public TotalVariance VT;
+        /// <summary>
+        /// Contains model variance data
+        /// </summary>
         public ModelVariance VM;
-        
+        /// <summary>
+        /// Contains all branches depths
+        /// </summary>
+        public List<double> depths = new List<double>();
+
         #endregion Fields
 
-
+        /// <summary>
+        /// Initialize a new instance of HeritabilityCalculator
+        /// </summary>
         public HeritabilityCalculator()
         {
             InitializeComponent();
+            this.KeyPreview = true;
+            this.KeyDown += new KeyEventHandler(Form1_KeyDown);
             WriteToLog("Insert Data", MessageType.Important);
-            WriteToLog("Number of processors on the mechine: " + Environment.ProcessorCount, MessageType.Info);
         }
 
+        /// <summary>
+        /// Message type for log coloring
+        /// </summary>
         public enum MessageType
         {
             Info,
@@ -86,6 +97,20 @@ namespace HeritabilityCalculator
             Important
         }
 
+        void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode.ToString() == "F1")
+            {
+                System.Diagnostics.Process.Start(@"C:\\Users\\Idan\\Desktop\\Test.pdf");
+            }
+        }
+
+        /// <summary>
+        /// Open a file dialog for file input
+        /// </summary>
+        /// <param name="filter">What type of files to enable selection</param>
+        /// <param name="filePath">The selected file path</param>
+        /// <returns>The contants of the selected file</returns>
         public string GetFileString(string filter, out string filePath)
         {
             fileDialog = new OpenFileDialog();
@@ -108,10 +133,14 @@ namespace HeritabilityCalculator
             return res;
         }
 
+        /// <summary>
+        /// Load the newick tree file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TreeBrowse_Click(object sender, EventArgs e)
         {
-            string path;
-            string newickTree = GetFileString("Newick Tree (*.txt)|*.txt", out path);
+            string newickTree = GetFileString("Newick Tree (*.txt)|*.txt", out string path);
             string msg = string.Empty;
             MessageType type = MessageType.Info;
             if (newickTree != null)
@@ -151,7 +180,13 @@ namespace HeritabilityCalculator
             WriteToLog(msg, type);
         }
 
-        List<double> depths = new List<double>();
+        /// <summary>
+        /// Create the main tree from the user input file
+        /// </summary>
+        /// <param name="node">A node in the tree</param>
+        /// <param name="branch">The local structre for the tree</param>
+        /// <param name="edge">Length of nodes edge</param>
+        /// <param name="max">The maximum length of the nodes vertebrae</param>
         public void CreateMainTree(Bio.Phylogenetics.Node node, Branch branch, double edge, double max)
         {
             max += edge;
@@ -164,13 +199,16 @@ namespace HeritabilityCalculator
                 branch.SubBranches.Add(new Branch());
                 CreateMainTree(node.Children.Keys.ElementAt(i), branch.SubBranches.ElementAt(i), node.Edges.ElementAt(i).Distance, max);
             }
-           
         }
 
+        /// <summary>
+        /// Load the user input file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void InputBrowse_Click(object sender, EventArgs e)
         {
-            string path;
-            string json = GetFileString("Input Data (*.json)|*.json", out path);
+            string json = GetFileString("Input Data (*.json)|*.json", out string path);
             string msg = string.Empty;
             MessageType type = MessageType.Info;
             if (json != null)
@@ -201,9 +239,13 @@ namespace HeritabilityCalculator
                 UserInputValid = false;
             UpdateStartButton();
             WriteToLog(msg, type);
-            
         }
 
+        /// <summary>
+        /// Start calculation of the main algorithm
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void StartButton_Click(object sender, EventArgs e)
         {
             TreeBrowse.Enabled = false;
@@ -211,14 +253,22 @@ namespace HeritabilityCalculator
             StartButton.Enabled = false;
             Log.Clear();
             WriteToLog("Starting Calculation...", MessageType.Important);
+
+            CalculateProgressBar.Maximum = numOftrees;
+            CalculateProgressBar.Step = 1;
+            CalculateProgressBar.Value = 0;
+            CalculateProgressBar.Visible = true;
+  
             VT = new TotalVariance(UserInputData);
             List<Task> tasks = new List<Task>
             {
                 Task.Factory.StartNew(() => VT.Calculate(this))
             };
 
-            VM = new ModelVariance(UserInputData, tree, MainTree, t0Itr);
-            VM.deltaT = depths.Max() / 40;
+            VM = new ModelVariance(UserInputData, tree, t0Itr)
+            {
+                deltaT = depths.Max() / 40
+            };
             tasks.Add(Task.Factory.StartNew(() => Parallel.For(0, numOftrees, i => VM.Calculate(this))));
             await Task.WhenAll(tasks);
 
@@ -261,11 +311,17 @@ namespace HeritabilityCalculator
                 DeltaT = VM.deltaT,
                 NumOfTrees = numOftrees
             };
-            TreeDraw l = new TreeDraw(data);
-            l.Create();
-            l.Open();
+            TreeDraw treeDraw = new TreeDraw(data);
+            treeDraw.Create();
+            treeDraw.Open();
         }
 
+        /// <summary>
+        /// Calculate X2 values for best iteration 
+        /// </summary>
+        /// <param name="liklihoods">Liklihoods for every t0 iteration in the VT partition</param>
+        /// <param name="bestItr">Best iteration index</param>
+        /// <returns>X2 values for best iteration</returns>
         public double[] GetX2(double[] liklihoods, int bestItr)
         {
             double[] res = new double[t0Itr];
@@ -277,6 +333,12 @@ namespace HeritabilityCalculator
             return res;
         }
 
+        /// <summary>
+        /// Calculate liklihoods for every t0 iteration in the VT partition
+        /// </summary>
+        /// <param name="baskets">All calculated variances distributed in to partitions</param>
+        /// <param name="vtPartition">VT partition index</param>
+        /// <returns>Liklihoods for every t0 iteration in the VT partition</returns>
         public double[] GetLiklihoods(int[,] baskets, int vtPartition)
         {
             double[] res = new double[t0Itr];
@@ -287,6 +349,12 @@ namespace HeritabilityCalculator
             return res;
         }
 
+        /// <summary>
+        /// Calculate VM for best to iteration, min VM and max VM
+        /// </summary>
+        /// <param name="Resaults">Results data structure that holds all the algorithm data</param>
+        /// <param name="bestItr">Best iteration index</param>
+        /// <returns>VM for best to iteration, min VM and max VM</returns>
         public double[] GetVM(ConcurrentBag<ModelVarianceContainer> Resaults, int bestItr)
         {
             double sumMin = 0;
@@ -307,6 +375,12 @@ namespace HeritabilityCalculator
             return new double[] { sumMin, sum, sumMax };
         }
 
+        /// <summary>
+        /// Calculate the best t0 iteration
+        /// </summary>
+        /// <param name="baskets">All calculated variances distributed in to partitions</param>
+        /// <param name="vtPartition">VT calculated partition</param>
+        /// <returns>Best t0 iteration index</returns>
         public int GetMaxT0(int[,] baskets, int vtPartition)
         {
             int max = 0;
@@ -322,7 +396,13 @@ namespace HeritabilityCalculator
             return itr;
         }
 
-        public int[,] GetBaskets(ConcurrentBag<ModelVarianceContainer> Resaults, double partition)
+        /// <summary>
+        /// Distribute all variance results in to partitions for every t0 iteration
+        /// </summary>
+        /// <param name="Resaults">Results data structure that holds all the algorithm data</param>
+        /// <param name="partitionSize">VT calculated partition</param>
+        /// <returns>Variances distributed in to partitions</returns>
+        public int[,] GetBaskets(ConcurrentBag<ModelVarianceContainer> Resaults, double partitionSize)
         {
             int[,] res = new int[t0Itr, numOfPartitions];
             string s = string.Empty;
@@ -330,23 +410,24 @@ namespace HeritabilityCalculator
             {
                 for(int j = 0; j < numOftrees; j++)
                 {
-                    //if (j < numOftrees-1)
-                    //    s += Resaults.ElementAt(j).Data.ElementAt(i).Variance + ",";
-                    //else
-                    //    s += Resaults.ElementAt(j).Data.ElementAt(i).Variance + Environment.NewLine;
-                    int p = GetPartition(partition, Resaults.ElementAt(j).Data.ElementAt(i).Variance);
+                    int p = GetPartition(partitionSize, Resaults.ElementAt(j).Data.ElementAt(i).Variance);
                     res[i, p]++;
                 }
             }
-            //File.WriteAllText("C:\\Users\\Idan\\Desktop\\TestV.csv", s);
             return res;
         }
 
-        public int GetPartition(double partition, double variance)
+        /// <summary>
+        /// Calculate partition slot
+        /// </summary>
+        /// <param name="partitionSize">Size of one partition</param>
+        /// <param name="variance">Variance to put in slot</param>
+        /// <returns>Calculated variance slot</returns>
+        public int GetPartition(double partitionSize, double variance)
         {
             for (int i = 0; i < numOfPartitions-1; i++)
             {
-                if (partition*i < variance && variance <= partition * (i + 1))
+                if (partitionSize * i < variance && variance <= partitionSize * (i + 1))
                 {
                     return i;
                 }
@@ -354,6 +435,11 @@ namespace HeritabilityCalculator
             return numOfPartitions - 1;
         }
 
+        /// <summary>
+        /// Calculate variance slot size
+        /// </summary>
+        /// <param name="Resaults">Results data structure that holds all the algorithm data</param>
+        /// <returns>Variance slot size</returns>
         public double GetPartitionsDelta(ConcurrentBag<ModelVarianceContainer> Resaults)
         {
             List<double> Vs = new List<double>();
@@ -365,6 +451,9 @@ namespace HeritabilityCalculator
             return max / 10;
         }
 
+        /// <summary>
+        /// Update start button disabled state
+        /// </summary>
         public void UpdateStartButton()
         {
 
@@ -373,6 +462,11 @@ namespace HeritabilityCalculator
             StartButton.Enabled = TreeValid && UserInputValid;
         }
 
+        /// <summary>
+        /// Handle log writing for the project
+        /// </summary>
+        /// <param name="message">Message to be displayed</param>
+        /// <param name="type">Message type</param>
         public void WriteToLog(string message, MessageType type)
         {
             string msg = DateTime.Now.ToLongTimeString() + ": " + message;
@@ -409,5 +503,22 @@ namespace HeritabilityCalculator
             }
         }
 
+        /// <summary>
+        /// Update calculations progress bar
+        /// </summary>
+        public void UpdateProgress()
+        {
+            if (CalculateProgressBar.InvokeRequired)
+            {
+                CalculateProgressBar.BeginInvoke((Action)(() =>
+                {
+                    CalculateProgressBar.Value++;
+                }));
+            }
+            else
+            {
+                CalculateProgressBar.Value++;
+            }
+        }
     }
 }

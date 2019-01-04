@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HeritabilityCalculator
 {
+    /// <summary>
+    /// Data for finished calculation event
+    /// </summary>
     public class FinishedEventArgs : EventArgs
     {
         public string Message { get; private set; }
-        public FinishedEventArgs(string msg)
+        public bool UpdateProgress { get; private set; }
+        public FinishedEventArgs(string msg, bool updateProgress)
         {
             Message = msg;
+            UpdateProgress = updateProgress;
         }
     }
 
+    /// <summary>
+    /// Contains variance data
+    /// </summary>
     public abstract class Variance
     {
         #region Fields
@@ -25,6 +31,10 @@ namespace HeritabilityCalculator
 
         #endregion Fields
 
+        /// <summary>
+        /// Create new instance of variance
+        /// </summary>
+        /// <param name="userinput">User input data</param>
         public Variance(UserInput userinput)
         {
             userData = userinput;
@@ -35,15 +45,22 @@ namespace HeritabilityCalculator
         /// Write finished message to log
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="e">Data for finished calculation event</param>
         private void Variance_Finished(object sender, FinishedEventArgs e)
         {
             if (!(sender is HeritabilityCalculator))
                 return;
             HeritabilityCalculator form = sender as HeritabilityCalculator;
             form.WriteToLog(e.Message + (itr++), HeritabilityCalculator.MessageType.Info);
+            if (e.UpdateProgress)
+                form.UpdateProgress();
         }
 
+        /// <summary>
+        /// Raise finished event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Data for finished calculation event</param>
         protected virtual void RaiseFinished(object sender, FinishedEventArgs e)
         {
             if (Finished != null)
@@ -53,7 +70,7 @@ namespace HeritabilityCalculator
         /// <summary>
         /// Calculate distribution of each phenotypic value
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Distribution of each phenotypic value</returns>
         public Dictionary<string,double> GetPC(Dictionary<string,int> NumOfInstances)
         {
             if (!userData.Validate())
@@ -67,6 +84,11 @@ namespace HeritabilityCalculator
             return Pc;
         }
 
+        /// <summary>
+        /// Calculate variance for all traits
+        /// </summary>
+        /// <param name="Pc">Distribution of each phenotypic value</param>
+        /// <returns>Minimum variance</returns>
         public double GetVariance(Dictionary<string, double> Pc)
         {
             List<double> Vis = new List<double>();
@@ -85,8 +107,8 @@ namespace HeritabilityCalculator
         /// <summary>
         /// Calcualte how many instances of each phenotype are exist
         /// </summary>
-        /// <param name="traitValues"></param>
-        /// <returns></returns>
+        /// <param name="traitValues">List of all observed trait values</param>
+        /// <returns>How many instances of each phenotype are exist</returns>
         public Dictionary<string,int> GetNumOfInstances(TraitValue[] traitValues)
         {
             if (traitValues == null)
@@ -103,16 +125,20 @@ namespace HeritabilityCalculator
         }
 
         /// <summary>
-        /// Gets variance using ferchet distance
+        /// Calculate variance using ferchet distance
         /// </summary>
-        /// <param name="distance"></param>
-        /// <param name="Pc"></param>
-        /// <returns></returns>
+        /// <param name="distance">Ferchet distance</param>
+        /// <param name="Pc">Distribution of each phenotypic value</param>
+        /// <returns>Variance</returns>
         public double GetFerchetDistance(double distance, double Pc)
         {
             return Math.Pow(distance, 2) * Pc;
         }
 
+        /// <summary>
+        /// Calculate variance
+        /// </summary>
+        /// <param name="Main">Main form</param>
         public virtual void Calculate(object Main)
         {
             return;

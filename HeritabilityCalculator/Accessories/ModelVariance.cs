@@ -4,17 +4,21 @@ using System.Linq;
 using Accord.Math;
 using System.Security.Cryptography;
 using System.Collections.Concurrent;
-using System.IO;
 
 namespace HeritabilityCalculator
 {
-
+    /// <summary>
+    /// Contains all VM iterations data
+    /// </summary>
     public class ModelVarianceContainer
     {
         public Branch GeneratedTree { get; set; }
         public List<ModelVarianceData> Data { get; set; }
     }
 
+    /// <summary>
+    /// Contains VM data
+    /// </summary>
     public class ModelVarianceData
     {
         public double T0 { get; set; }
@@ -22,24 +26,32 @@ namespace HeritabilityCalculator
         public List<TraitValue> ObservedTraits { get; set; } = new List<TraitValue>();
     }
 
+    /// <summary>
+    /// Represents model variance
+    /// </summary>
     public class ModelVariance : Variance
     {
-        //private Tree tree;
         private Bio.Phylogenetics.Tree tree;
         public ConcurrentBag<ModelVarianceContainer> Resaults = new ConcurrentBag<ModelVarianceContainer>();
         public double deltaT = 1;
-        private int t0Itr;
+        private readonly int t0Itr;
 
-
-        public ModelVariance(UserInput userinput, Bio.Phylogenetics.Tree root, Tree mainTree, int Itr) : base(userinput)
+        /// <summary>
+        /// Create new instance of model variance
+        /// </summary>
+        /// <param name="userinput">User input data</param>
+        /// <param name="root">Root of the parsed newick tree</param>
+        /// <param name="Itr">Number of t0 iteration</param>
+        public ModelVariance(UserInput userinput, Bio.Phylogenetics.Tree root, int Itr) : base(userinput)
         {
             tree = root;
-            //tree = mainTree;
-            //deltaT = tree.MaxDepth / 40;
             t0Itr = Itr;
         }
 
-  
+        /// <summary>
+        /// Main algorithm for model variance
+        /// </summary>
+        /// <param name="Main">Main form</param>
         public override void Calculate(object Main)
         {
             if (!(Main is HeritabilityCalculator))
@@ -48,11 +60,8 @@ namespace HeritabilityCalculator
             if (!userData.Validate())
                 return;
 
-            // Alg Start
- 
+            // Algorithm Start
             Branch currentTree = new Branch();
-            //Tree t = new Tree(tree.input);
-            //currentTree = t.Parse();
             form.CreateMainTree(tree.Root, currentTree, 0, 0);
             SimulateTree(currentTree, null);
             List<Branch> curLeavs = new List<Branch>();
@@ -81,13 +90,13 @@ namespace HeritabilityCalculator
             }
             container.Data = data;
             Resaults.Add(container);
-            RaiseFinished(form, new FinishedEventArgs("Finished Itteration "));
+            RaiseFinished(form, new FinishedEventArgs("Finished Itteration ", true));
         }
 
         /// <summary>
-        /// Return a random integer between a min and max value.
+        /// Return a random integer between a min and max value
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Crypto random number</returns>
         private double GetRandom()
         {
             RNGCryptoServiceProvider Rand = new RNGCryptoServiceProvider();
@@ -96,20 +105,21 @@ namespace HeritabilityCalculator
             uint scale = uint.MaxValue;
             while (scale == uint.MaxValue)
             {
-                // Get four random bytes.
                 byte[] four_bytes = new byte[4];
                 Rand.GetBytes(four_bytes);
-                // Convert that into an uint.
                 scale = BitConverter.ToUInt32(four_bytes, 0);
             }
-
-            // Add min to the scaled difference between max and min.
             int num = (int)(min + (max - min) *
                 (scale / (double)uint.MaxValue));
-
             return (double)num / 100;
         }
 
+        /// <summary>
+        /// Calculate observed traits
+        /// </summary>
+        /// <param name="currentLeavs">Current tree leavs</param>
+        /// <param name="t0">Current to iteration</param>
+        /// <returns>Current observed traits</returns>
         private List<TraitValue> GetCurObservedTraitValues(List<Branch> currentLeavs, double t0) 
         {
             List<TraitValue> traitvalues = new List<TraitValue>();
@@ -124,6 +134,11 @@ namespace HeritabilityCalculator
             return traitvalues;
         }
 
+        /// <summary>
+        /// Generate observed traits from current tree
+        /// </summary>
+        /// <param name="fatherNode">Root for current tree</param>
+        /// <param name="observed">Empty observed list</param>
         private void GetCurrentLeavs(Branch fatherNode, List<Branch> observed)
         {
             if (fatherNode.SubBranches.Count == 0)
@@ -131,13 +146,17 @@ namespace HeritabilityCalculator
                 observed.Add(fatherNode);
                 return;
             }
-
             foreach (Branch child in fatherNode.SubBranches)
             {
                 GetCurrentLeavs(child, observed);
             }
         }
 
+        /// <summary>
+        /// Simulate a trait for eich node in the tree
+        /// </summary>
+        /// <param name="fatherNode">Root for current tree</param>
+        /// <param name="fatherTrait">Direct ancestor phenotypic trait of node</param>
         private void SimulateTree(Branch fatherNode, string fatherTrait)
         {
             if (fatherNode.Length == 0)
@@ -149,13 +168,18 @@ namespace HeritabilityCalculator
                 string trait = GetNodeTrait(fatherTrait, fatherNode.Length);
                 fatherNode.TraitValue.value = trait;
             }
-
             foreach (Branch child in fatherNode.SubBranches)
             {
                 SimulateTree(child, fatherNode.TraitValue.value);
             }
         }
 
+        /// <summary>
+        /// Simulate a phenotypic trait
+        /// </summary>
+        /// <param name="fatherTrait">Direct ancestor phenotypic trait of node</param>
+        /// <param name="distance">Edge length</param>
+        /// <returns></returns>
         private string GetNodeTrait(string fatherTrait, double distance)
         {
             string trait = null;
@@ -174,17 +198,6 @@ namespace HeritabilityCalculator
                 double[,] Mt = Elementwise.Multiply(userData.EmissionMatrix, distance);  // Calc matrix *t0 example
                 double[,] Q = CalculateExp(Mt); // Calc the exp matrix using taylor expansion
                 string s = string.Empty;
-                //for (int i = 0; i < Q.GetLength(0); i++)
-                //{
-                //    for (int j = 0; j < Q.GetLength(1); j++)
-                //    {
-                //        if (j < Q.GetLength(1) - 1)
-                //            s += Q[i, j] + ",";
-                //        else
-                //            s += Q[i, j] + Environment.NewLine;
-                //    }
-                //}
-                //File.WriteAllText("C:\\Users\\Idan\\Desktop\\Test2.csv", s);
                 double[] probs = Q.GetRow(index);
                 Dictionary<string, double> traitQs = new Dictionary<string, double>(0);
                 for (int j = 0; j < userData.Traits.Length; j++)
@@ -217,13 +230,16 @@ namespace HeritabilityCalculator
             return trait;
         }
 
+        /// <summary>
+        /// Simulate the root phenotypic trait
+        /// </summary>
+        /// <returns>Root phenotypic trait</returns>
         private string GetRoot()
         {
             string root = null;
             Random rnd = new Random();
             double P = rnd.Next(100);
             P /= 100;
-
             double traitprob = (double)1 / userData.Traits.Length;
             for (int i = 0; i < userData.Traits.Length; i++)
             {
@@ -274,6 +290,12 @@ namespace HeritabilityCalculator
             return answer;
         }
 
+        /// <summary>
+        /// Calculate matrix power
+        /// </summary>
+        /// <param name="x">A matrix</param>
+        /// <param name="power">Power</param>
+        /// <returns>Matrix power</returns>
         private double[,] GetMatrixPower(double[,] x, double power)
         {
 
@@ -325,8 +347,8 @@ namespace HeritabilityCalculator
         /// <summary>
         /// Calculate the factorial for x
         /// </summary>
-        /// <param name="x"></param>
-        /// <returns></returns>
+        /// <param name="x">The number to factor</param>
+        /// <returns>Factorial for x</returns>
         private double Factorial(double x)
         {
             double answer = 1;
@@ -338,7 +360,6 @@ namespace HeritabilityCalculator
                 if (double.IsInfinity(answer) || double.IsNaN(answer))
                     return double.MaxValue;
                 counter++;
-
             }
             return answer;
         }
