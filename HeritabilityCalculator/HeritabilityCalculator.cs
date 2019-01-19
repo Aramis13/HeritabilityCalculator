@@ -27,7 +27,7 @@ namespace HeritabilityCalculator
         /// <summary>
         /// Number of trees to be simulated
         /// </summary>
-        public const int numOftrees = 100;
+        public const int numOftrees = 20;
         /// <summary>
         /// Number of t0 iterations
         /// </summary>
@@ -197,7 +197,7 @@ namespace HeritabilityCalculator
             UpdateStartButton();
             WriteToLog(msg, type);
         }
-
+        int numOfLeevs = 0;
         /// <summary>
         /// Create the main tree from the user input file
         /// </summary>
@@ -209,7 +209,10 @@ namespace HeritabilityCalculator
         {
             max += edge;
             if (node.IsLeaf)
+            {
                 depths.Add(max);
+                numOfLeevs++;
+            }
             branch.Length = edge;
             branch.SubBranches = new List<Branch>();
             for (int i = 0; i < node.Children.Count; i++)
@@ -245,7 +248,7 @@ namespace HeritabilityCalculator
                     type = MessageType.Success;
                     UserInputText.Text = path;
                 }
-                catch (Exception)
+                catch (Exception exp)
                 {
                     msg = "Failed to parse input" + Environment.NewLine;
                     msg += "Validate that your input is in the correct format.";

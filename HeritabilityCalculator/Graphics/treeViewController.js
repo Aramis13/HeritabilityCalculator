@@ -2,7 +2,8 @@
 // ************** Generate the tree diagram	 *****************
 var w = document.documentElement.clientWidth;
 var margin = { top: 20, right: 120, bottom: 20, left: 120 },
-    width = w - margin.right - margin.left,
+    //width = w - margin.right - margin.left,
+    width = '500%';
     height = 500 - margin.top - margin.bottom;
 
 var i = 0,
@@ -65,9 +66,14 @@ function update(source) {
     nodeEnter.append("circle")
         .attr("r", 1e-6)
         .style("fill", function (d) {
-            if (d.name === "red") return "red";
+            if (d.name === "black") return "black";
             if (d.name === "green") return "green";
             if (d.name === "blue") return "blue";
+            if (d.name === "brown") return "brown";
+            if (d.name === "grey") return "grey";
+            if (d.name === "white") return "white";
+            if (d.name === "orange") return "orange";
+            if (d.name === "yellow") return "yellow";
         });
 
     nodeEnter.append("text")
@@ -85,9 +91,14 @@ function update(source) {
     nodeUpdate.select("circle")
         .attr("r", 10)
         .style("fill", function (d) {
-            if (d.name === "red") return "red";
+            if (d.name === "black") return "black";
             if (d.name === "green") return "green";
             if (d.name === "blue") return "blue";
+            if (d.name === "brown") return "brown";
+            if (d.name === "grey") return "grey";
+            if (d.name === "white") return "white";
+            if (d.name === "orange") return "orange";
+            if (d.name === "yellow") return "yellow";
         });
 
     nodeUpdate.select("text")
@@ -160,9 +171,14 @@ function updateObserved(source) {
     nodeEnter.append("circle")
         .attr("r", 1e-6)
         .style("fill", function (d) {
-            if (d.name === "red") return "red";
+            if (d.name === "black") return "black";
             if (d.name === "green") return "green";
             if (d.name === "blue") return "blue";
+            if (d.name === "brown") return "brown";
+            if (d.name === "grey") return "grey";
+            if (d.name === "white") return "white";
+            if (d.name === "orange") return "orange";
+            if (d.name === "yellow") return "yellow";
         });
 
     nodeEnter.append("text")
@@ -180,9 +196,14 @@ function updateObserved(source) {
     nodeUpdate.select("circle")
         .attr("r", 10)
         .style("fill", function (d) {
-            if (d.name === "red") return "red";
+            if (d.name === "black") return "black";
             if (d.name === "green") return "green";
             if (d.name === "blue") return "blue";
+            if (d.name === "brown") return "brown";
+            if (d.name === "grey") return "grey";
+            if (d.name === "white") return "white";
+            if (d.name === "orange") return "orange";
+            if (d.name === "yellow") return "yellow";
         });
 
     nodeUpdate.select("text")
