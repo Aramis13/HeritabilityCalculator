@@ -27,7 +27,7 @@ namespace HeritabilityCalculator
         /// <summary>
         /// Number of trees to be simulated
         /// </summary>
-        public const int numOftrees = 20;
+        public const int numOftrees = 100;
         /// <summary>
         /// Number of t0 iterations
         /// </summary>

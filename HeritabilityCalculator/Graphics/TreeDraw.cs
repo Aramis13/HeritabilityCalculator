@@ -102,9 +102,9 @@ namespace HeritabilityCalculator
         {
             localPath = Environment.CurrentDirectory;
             data = treeData;
-            heritabilityMin = treeData.TotalVariance / treeData.ModelVariance[0];
-            heritability = treeData.TotalVariance / treeData.ModelVariance[1];
-            heritabilityMax = treeData.TotalVariance / treeData.ModelVariance[2];
+            heritabilityMin = treeData.ModelVariance[0] / treeData.TotalVariance;
+            heritability = treeData.ModelVariance[1] / treeData.TotalVariance;
+            heritabilityMax = treeData.ModelVariance[2] / treeData.TotalVariance;
         }
 
         /// <summary>
