@@ -102,9 +102,12 @@ namespace HeritabilityCalculator
         {
             localPath = Environment.CurrentDirectory;
             data = treeData;
-            heritabilityMin = treeData.ModelVariance[0] / treeData.TotalVariance;
-            heritability = treeData.ModelVariance[1] / treeData.TotalVariance;
-            heritabilityMax = treeData.ModelVariance[2] / treeData.TotalVariance;
+            heritabilityMin = treeData.TotalVariance / treeData.ModelVariance[0];
+            heritability = treeData.TotalVariance / treeData.ModelVariance[1];
+            heritabilityMax = treeData.TotalVariance / treeData.ModelVariance[2];
+            //heritabilityMin = treeData.ModelVariance[0] / treeData.TotalVariance;
+            //heritability = treeData.ModelVariance[1] / treeData.TotalVariance;
+            //heritabilityMax = treeData.ModelVariance[2] / treeData.TotalVariance;
         }
 
         /// <summary>
@@ -234,23 +237,32 @@ namespace HeritabilityCalculator
                 else
                     sb.Append(String.Format("{0:0.00}", (data.BestItrRes[i] / (double)data.NumOfTrees) * 100));
             }
+
             sb.AppendLine("],");
             sb.AppendLine("backgroundColor: [");
-            sb.AppendLine("'rgba(255, 99, 132, 0.2)',");
-            sb.AppendLine("'rgba(54, 162, 235, 0.2)',");
-            sb.AppendLine("'rgba(255, 206, 86, 0.2)',");
-            sb.AppendLine("'rgba(75, 192, 192, 0.2)',");
-            sb.AppendLine("'rgba(153, 102, 255, 0.2)',");
-            sb.AppendLine("'rgba(255, 159, 64, 0.2)'");
+            sb.AppendLine("'#003f5c',");
+            sb.AppendLine("'#2f4b7c',");
+            sb.AppendLine("'#665191',");
+            sb.AppendLine("'#a05195',");
+            sb.AppendLine("'#d45087',");
+            sb.AppendLine("'#f95d6a',");
+            sb.AppendLine("'#ff7c43',");
+            sb.AppendLine("'#ffa600',");
+            sb.AppendLine("'#ffffff',");
+            sb.AppendLine("'#21DE62'");
             sb.AppendLine("],");
 
             sb.AppendLine("borderColor: [");
-            sb.AppendLine("'rgba(255,99,132,1)',");
-            sb.AppendLine("'rgba(54, 162, 235, 1)',");
-            sb.AppendLine("'rgba(255, 206, 86, 1)',");
-            sb.AppendLine("'rgba(75, 192, 192, 1)',");
-            sb.AppendLine("'rgba(153, 102, 255, 1)',");
-            sb.AppendLine("'rgba(255, 159, 64, 1)'");
+            sb.AppendLine("'#003f5c',");
+            sb.AppendLine("'#2f4b7c',");
+            sb.AppendLine("'#665191',");
+            sb.AppendLine("'#a05195',");
+            sb.AppendLine("'#d45087',");
+            sb.AppendLine("'#f95d6a',");
+            sb.AppendLine("'#ff7c43',");
+            sb.AppendLine("'#ffa600',");
+            sb.AppendLine("'#ffffff',");
+            sb.AppendLine("'#21DE62'");
             sb.AppendLine("],");
             sb.AppendLine("borderWidth: 1");
             sb.AppendLine("}]");
