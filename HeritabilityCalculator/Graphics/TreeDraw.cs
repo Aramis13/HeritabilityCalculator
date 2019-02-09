@@ -102,12 +102,9 @@ namespace HeritabilityCalculator
         {
             localPath = Environment.CurrentDirectory;
             data = treeData;
-            heritabilityMin = treeData.TotalVariance / treeData.ModelVariance[0];
-            heritability = treeData.TotalVariance / treeData.ModelVariance[1];
-            heritabilityMax = treeData.TotalVariance / treeData.ModelVariance[2];
-            //heritabilityMin = treeData.ModelVariance[0] / treeData.TotalVariance;
-            //heritability = treeData.ModelVariance[1] / treeData.TotalVariance;
-            //heritabilityMax = treeData.ModelVariance[2] / treeData.TotalVariance;
+            heritabilityMin = treeData.ModelVariance[0] / treeData.TotalVariance;
+            heritability = treeData.ModelVariance[1] / treeData.TotalVariance;
+            heritabilityMax = treeData.ModelVariance[2] / treeData.TotalVariance;
         }
 
         /// <summary>
@@ -152,12 +149,12 @@ namespace HeritabilityCalculator
             sb.AppendLine("<div id='resualts' class='col-sm-12 res'>");
             sb.AppendLine("<h4 class='col-sm-4'>Total Variance: " + String.Format("{0:0.00}", data.TotalVariance) + "</h4>");
             sb.AppendLine("<h4 class='col-sm-4'>Model Variance: " + String.Format("{0:0.00}", data.ModelVariance[1]) + "</h4>");
-            sb.AppendLine("<h4 class='col-sm-4'>Liklihood: " + data.Liklihood * 100 + "%</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Liklihood(MLE): " + data.Liklihood * 100 + "%</h4>");
             sb.AppendLine("</div>");
             sb.AppendLine("<div id='heritability' class='col-sm-12 res'>");
-            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Min): " + String.Format("{0:0.00}", heritabilityMax) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Min): " + String.Format("{0:0.00}", heritabilityMin) + "</h4>");
             sb.AppendLine("<h4 class='col-sm-4' style='font-weight: 900;'>Heritability: " + String.Format("{0:0.00}", heritability) + "</h4>");
-            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Max): " + String.Format("{0:0.00}", heritabilityMin) + "</h4>");
+            sb.AppendLine("<h4 class='col-sm-4'>Heritability (Max): " + String.Format("{0:0.00}", heritabilityMax) + "</h4>");
             sb.AppendLine("</div>");
             sb.AppendLine("</body>");
             sb.AppendLine("<script>");
